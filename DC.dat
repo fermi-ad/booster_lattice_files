@@ -1,0 +1,9 @@
+@ NAME             %7s "DCTABLE"
+@ TYPE             %04s "USER"
+@ TITLE            %20s "FNAL Booster lattice"
+@ ORIGIN           %24s "MAD-X 5.01.00 Windows 32"
+@ DATE             %08s "24/03/13"
+@ TIME             %08s "22.38.54"
+*                 I_DOGL03    I_SEXL4    I_SEXL5    I_SEXL6    I_SEXL7    
+$                  %le        %le        %le        %le        %le        
+          2.814000e+02    0.000000e+00    0.000000e+00    0.000000e+00    0.000000e+00    
