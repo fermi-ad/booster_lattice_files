@@ -181,5 +181,8 @@
 !
 !06/19/2023 Jeff Eldred
 !	Switched from Fermilab Redmine repository to Fermi Controls github repository.
+!   Moved all element definitions to .ele (from .seq) and all line definitions to .seq (from .ele)
+!       For now simply commented out lines whenever possible to make prior format clear.
+!       The .ele file is now much longer and .seq much shorter.
 
 
