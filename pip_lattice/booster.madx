@@ -33,14 +33,20 @@ Always use the latest version for best results.
  
 /**********
    choose time in acceleration rapmass to use by choosing a "slot" on the magnet setting table (ie QL.dat table):
-   adjust dQS, dQL to match betatron tunes for most accurate results. 
+   match dQS, dQL to specific true betatron tunes for more accurate results. 
 ***************************/
 
 timeSlot=3; // user selected time slot
 
-dIQS = 0.0;
-dIQL = 0.0;
+use_match = 1; //force specific betatron tunes.
 
+IF (use_match == 1){
+  nux_set = 6.75;
+  nuy_set = 6.85;
+}ELSE{
+  dIQS = 0.0;
+  dIQL = 0.0;
+}
 
 /*****************************************************************************/
 
@@ -105,8 +111,22 @@ call, file = 'booster.seq';
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!! corrector:
 !I_HS24 = 0.05;
 
+
+
 beam, particle = PROTON, pc= pc;  
 use, sequence = booster;
+
+/*********** Match to tunes *****/
+IF (use_match == 1){
+  MATCH, SEQUENCE=booster;
+  CONSTRAINT, SEQUENCE=booster, RANGE=#e, MUX=nux_set, MUY=nuy_set;
+  VARY, NAME=dIQS, STEP=1.0E-2;
+  VARY, NAME=dIQL, STEP=1.0E-2;
+  LMDIF, CALLS=100, TOLERANCE=1.0E-4;
+  ENDMATCH;
+
+  value, dIQS, dIQL;
+}
 
 /*********** define dispersion correctly (since MADX uses pt, not delta p, as 5th variable) *****/
 beta=sqrt(1-1/beam->gamma^2);

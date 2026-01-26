@@ -188,6 +188,6 @@
 !01/26/2026 Jeff Eldred
 !   Switched from Fermilab Controls github repository to Fermilab AD github repository
 !   Removed legacy support for LOCO code, individual quad errors and err.dat files
-!   Added dIQL and dIQS variables to booster.madx to allow for manual adjustment of tunes.
+!   Added dIQL and dIQS variables and corresponding MATCH module to booster.madx to allow for manual or automatic adjustment of tunes.
 !
 
