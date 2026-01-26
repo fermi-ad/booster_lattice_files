@@ -33,20 +33,13 @@ Always use the latest version for best results.
  
 /**********
    choose time in acceleration rapmass to use by choosing a "slot" on the magnet setting table (ie QL.dat table):
-   set errorSwicth=1 if error tables are needed to be used.
-   set isLOCO = 1 if this file is used for LOCO fitting.
-
-   IMPORTANT!!!!! For LOCO fitting, timeSlot must be set to 1 because there there will only be 1 data line in QL*.dat, QS*.dat etc.
+   adjust dQS, dQL to match betatron tunes for most accurate results. 
 ***************************/
-errorSwitch=0;
-isLOCO=0;
 
-if(isLOCO==1){
-  timeSlot=1;
-}
-else {
-  timeSlot=3; // user selected time slot
-}
+timeSlot=3; // user selected time slot
+
+dIQS = 0.0;
+dIQL = 0.0;
 
 /*****************************************************************************/
 
@@ -89,19 +82,6 @@ setvars, table=qsqdtable,row= timeSlot;
 t0=time;
 value, t0;
 
-! pseudoquads from LOCO calibration:
-value, errorswitch;
-If (errorSwitch==1)
-{value, errorswitch;
-	READMYTABLE,file="QLerr.dat",table=QLerrtable;
-	setvars, table=QLerrtable,row= timeSlot;
-	READMYTABLE,file="QSerr.dat",table=QSerrtable;
-	setvars, table=QSerrtable,row= timeSlot;
-	READMYTABLE,file="SQLerr.dat",table=SQLerrtable;
-	setvars, table=SQLerrtable,row= timeSlot;
-	READMYTABLE,file="SQSerr.dat",table=SQSerrtable;
-	setvars, table=SQSerrtable,row= timeSlot;
-}
 /*****************************************************************************/
 
 KE0=.4;  											! injection kinetic energy (in GeV)

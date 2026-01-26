@@ -184,5 +184,10 @@
 !   Moved all element definitions to .ele (from .seq) and all line definitions to .seq (from .ele)
 !       For now simply commented out lines whenever possible to make prior format clear.
 !       The .ele file is now much longer and .seq much shorter.
-
+!
+!01/26/2026 Jeff Eldred
+!   Switched from Fermilab Controls github repository to Fermilab AD github repository
+!   Removed legacy support for LOCO code, individual quad errors and err.dat files
+!   Added dIQL and dIQS variables to booster.madx to allow for manual adjustment of tunes.
+!
 

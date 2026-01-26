@@ -32,8 +32,7 @@ SEPT03      : RBEND		, L = 1.524/2  , ANGLE = 0.00000001 , TILT = pi/2, E1=-0.00
 //---------------------- Corrector Package Elements ---------------------------------------------
 DHZ    	    : HKICKER			, L = 0.024 , CALIB = 0.000366 / Brho;         
 DVT         : VKICKER			, L = 0.024 , CALIB = 0.000365 / Brho;      
-NQUAD       : QUADRUPOLE		, L = 0.024 , CALIB = 0.002489 / 0.024 / Brho;        
-ERRQUAD     : MULTIPOLE   ;        
+NQUAD       : QUADRUPOLE		, L = 0.024 , CALIB = 0.002489 / 0.024 / Brho;
 SQUAD  	    : QUADRUPOLE 		, L = 0.024 , CALIB = -0.003924 / 0.024 / Brho;        
 NSEXT       : SEXTUPOLE	    		, L = 0.024 , CALIB = 2.0 * 0.045831 / 0.024 / Brho;      
 SSEXT       : SEXTUPOLE	    		, L = 0.024 , CALIB = 2.0 * 0.045477 / 0.024 / Brho;     
@@ -204,489 +203,441 @@ MULDG03_4   : MULTIPOLE	, LRAD := L_DOG, TILT := -pi/2	, KNL := {0, 0, 0, 0, 4.0
 
  HS24            : DHZ             ,              HKICK := DHZ->CALIB*I_HS24   		;
  VS24            : DVT             ,              VKICK := DVT->CALIB*I_VS24   		;
- QS24            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS24+K_QSERR24)   	;
+ QS24            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS24+dIQS)   	;
  BPMS24          : BPM_1           ;
  QSS24           : SQUAD           ,              K1S	:= SQUAD->CALIB*I_SQS24  	;
- QSSERR24        : ERRQUAD         ,	          KSL	:= {0, K_SQSERR24}		;
  SXS24           : NSEXT           ,              K2  	:= NSEXT->CALIB*I_SXS24   	;
  SSS24           : SSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS24   	;
-!CPS24 :    line=(HS24,VS24,QS24,BPMS24,QSS24,QSSERR24,SXS24,SSS24);
+!CPS24 :    line=(HS24,VS24,QS24,BPMS24,QSS24,SXS24,SSS24);
 
  HS01            : DHZ             ,           HKICK := DHZ->CALIB*I_HS01   		;
  VS01            : DVT             ,           VKICK := DVT->CALIB*I_VS01   		;
- QS01            : NQUAD           ,           K1 	:= NQUAD->CALIB*(I_QS01+K_QSERR01)   	;
+ QS01            : NQUAD           ,           K1 	:= NQUAD->CALIB*(I_QS01+dIQS)   	;
  BPMS01          : BPM_1           ;
  QSS01           : SQUAD                       K1S	:= SQUAD->CALIB*I_SQS01  	;
- QSSERR01        : ERRQUAD         ,           KSL	:= {0, K_SQSERR01}		;
  SXS01           : NSEXT           ,           K2 	:= NSEXT->CALIB*I_SXS01   	;
  SSS01           : SSEXT           ,           K2S 	:= SSEXT->CALIB*I_SSS01   	;
-!CPS01 :    line=(HS01,VS01,QS01,BPMS01,QSS01,QSSERR01,SXS01,SSS01);
+!CPS01 :    line=(HS01,VS01,QS01,BPMS01,QSS01,SXS01,SSS01);
 
  HS02            : DHZ             ,              HKICK := DHZ->CALIB*I_HS02   		;
  VS02            : DVT             ,              VKICK := DVT->CALIB*I_VS02   		;
- QS02            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS02+K_QSERR02)  		;
+ QS02            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS02+dIQS)  		;
  BPMS02          : BPM_1           ;
  QSS02           : SQUAD           ,              K1S	:= SQUAD->CALIB*I_SQS02  		;
- QSSERR02        : ERRQUAD         ,              KSL	:= {0, K_SQSERR02  		};
  SXS02           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS02   	;
  SSS02           : SSEXT           ,              K2S	:= SSEXT->CALIB*I_SSS02   	;
-!CPS02 :    line=(HS02,VS02,QS02,BPMS02,QSS02,QSSERR02,SXS02,SSS02);
+!CPS02 :    line=(HS02,VS02,QS02,BPMS02,QSS02,SXS02,SSS02);
 
  HS03            : DHZ             ,              HKICK := DHZ->CALIB*I_HS03   		;
  VS03            : DVT             ,              VKICK := DVT->CALIB*I_VS03   		;
- QS03            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS03+K_QSERR03)   		;
+ QS03            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS03+dIQS)   		;
  BPMS03          : BPM_1           ;
  QSS03           : SQUAD           ,              K1S	:= SQUAD->CALIB*I_SQS03  		;
- QSSERR03        : ERRQUAD         ,              KSL	:= {0, K_SQSERR03  		};
  SXS03           : NSEXT           ,              K2  	:= NSEXT->CALIB*I_SXS03   	;
  SSS03           : SSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS03  		;
-!CPS03 :    line=(HS03,VS03,QS03,BPMS03,QSS03,QSSERR03,SXS03,SSS03);
+!CPS03 :    line=(HS03,VS03,QS03,BPMS03,QSS03,SXS03,SSS03);
 
  HS04            : DHZ             ,              HKICK := DHZ->CALIB*I_HS04   		;
  VS04            : DVT             ,              VKICK := DVT->CALIB*I_VS04   		;
- QS04            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS04+K_QSERR04)   	    ;
+ QS04            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS04+dIQS)   	    ;
  BPMS04          : BPM_1           ;
  QSS04           : SQUAD           ,              K1S	:= SQUAD->CALIB*I_SQS04  		;
- QSSERR04        : ERRQUAD         ,              KSL	:= {0, K_SQSERR04  		};
  SXS04           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS04   	;
  SSS04           : SSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS04  		;
-!CPS04 :    line=(HS04,VS04,QS04,BPMS04,QSS04,QSSERR04,SXS04,SSS04);
+!CPS04 :    line=(HS04,VS04,QS04,BPMS04,QSS04,SXS04,SSS04);
 
  HS05            : DHZ             ,              HKICK := DHZ->CALIB*I_HS05   			;
  VS05            : DVT             ,              VKICK := DVT->CALIB*I_VS05   			;
- QS05            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS05+K_QSERR05)  			;
+ QS05            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS05+dIQS)  			;
  BPMS05          : BPM_1           ;
  QSS05           : SQUAD           ,              K1S	:= SQUAD->CALIB*I_SQS05  			;
- QSSERR05        : ERRQUAD         ,              KSL	:= {0, K_SQSERR05  			};
  SXS05           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS05   		;
  SSS05           : SSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS05   		;
-!CPS05 :    line=(HS05,VS05,QS05,BPMS05,QSS05,QSSERR05,SXS05,SSS05);
+!CPS05 :    line=(HS05,VS05,QS05,BPMS05,QSS05,SXS05,SSS05);
 
 HS06            : DHZ             ,              HKICK := DHZ->CALIB*I_HS06   			;
  VS06            : DVT             ,              VKICK := DVT->CALIB*I_VS06   			;
- QS06            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS06+K_QSERR06)  			;
+ QS06            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS06+dIQS)  			;
  BPMS06          : BPM_1           ;
  QSS06           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS06  			;
- QSSERR06        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR06  			};
  SXS06           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS06   		;
  SSS06           : SSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS06   		;
-!CPS06 :    line=(HS06,VS06,QS06,BPMS06,QSS06,QSSERR06,SXS06,SSS06);
+!CPS06 :    line=(HS06,VS06,QS06,BPMS06,QSS06,SXS06,SSS06);
 
 HS07            : DHZ                          HKICK := DHZ->CALIB*I_HS07   			;
  VS07            : DVT                          VKICK := DVT->CALIB*I_VS07   			;
- QS07            : NQUAD           ,            K1 	:= NQUAD->CALIB*(I_QS07+K_QSERR07)  			;
+ QS07            : NQUAD           ,            K1 	:= NQUAD->CALIB*(I_QS07+dIQS)  			;
  BPMS07          : BPM_1           ;
  QSS07           : SQUAD           ,            K1S 	:= SQUAD->CALIB*I_SQS07  			;
- QSSERR07        : ERRQUAD         ,            KSL 	:= {0, K_SQSERR07  			};
  SXS07           : NSEXT           ,            K2 	:= NSEXT->CALIB*I_SXS07   		;
  SSS07           : SSEXT           ,            K2 	:= SSEXT->CALIB*I_SSS07   		;
-!CPS07 :    line=(HS07,VS07,QS07,BPMS07,QSS07,QSSERR07,SXS07,SSS07);
+!CPS07 :    line=(HS07,VS07,QS07,BPMS07,QSS07,SXS07,SSS07);
 
 HS08            : DHZ             ,              HKICK := DHZ->CALIB*I_HS08  			;
  VS08            : DVT             ,              VKICK := DVT->CALIB*I_VS08  			;
- QS08            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS08+K_QSERR08)  			;
+ QS08            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS08+dIQS)  			;
  BPMS08          : BPM_1           ;
  QSS08           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS08  			;
- QSSERR08        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR08  			};
  SXS08           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS08   		;
  SSS08           : SSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS08   		;
-!CPS08 :    line=(HS08,VS08,QS08,BPMS08,QSS08,QSSERR08,SXS08,SSS08);
+!CPS08 :    line=(HS08,VS08,QS08,BPMS08,QSS08,SXS08,SSS08);
 
  HS09            : DHZ             ,              HKICK := DHZ->CALIB*I_HS09   			;
  VS09            : DVT             ,              VKICK := DVT->CALIB*I_VS09  			;
- QS09            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS09+K_QSERR09)  			;
+ QS09            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS09+dIQS)  			;
  BPMS09          : BPM_1           ;
  QSS09           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS09  			;
- QSSERR09        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR09  			};
  SXS09           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS09   		;
  SSS09           : SSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS09   		;
-!CPS09 :    line=(HS09,VS09,QS09,BPMS09,QSS09,QSSERR09,SXS09,SSS09);
+!CPS09 :    line=(HS09,VS09,QS09,BPMS09,QSS09,SXS09,SSS09);
 
  HS10            : DHZ             ,               HKICK := DHZ->CALIB*I_HS10   			;
  VS10            : DVT             ,               VKICK := DVT->CALIB*I_VS10   			;
- QS10            : NQUAD           ,               K1 	:= NQUAD->CALIB*(I_QS10+K_QSERR10)  			;
+ QS10            : NQUAD           ,               K1 	:= NQUAD->CALIB*(I_QS10+dIQS)  			;
  BPMS10          : BPM_1           ;
  QSS10           : SQUAD           ,               K1S	:= SQUAD->CALIB*I_SQS10  			;
- QSSERR10        : ERRQUAD         ,               KSL	:= {0, K_SQSERR10  			};
  SXS10           : NSEXT           ,               K2 	:= NSEXT->CALIB*I_SXS10  			;
  SSS10           : SSEXT           ,               K2S 	:= SSEXT->CALIB*I_SSS10   		;
-!CPS10 :    line=(HS10,VS10,QS10,BPMS10,QSS10,QSSERR10,SXS10,SSS10);
+!CPS10 :    line=(HS10,VS10,QS10,BPMS10,QSS10,SXS10,SSS10);
 
 HS11            : DHZ             ,               HKICK := DHZ->CALIB*I_HS11   			;
  VS11            : DVT             ,               VKICK := DVT->CALIB*I_VS11   			;
- QS11            : NQUAD           ,               K1 	:= NQUAD->CALIB*(I_QS11+K_QSERR11)  			;
+ QS11            : NQUAD           ,               K1 	:= NQUAD->CALIB*(I_QS11+dIQS)  			;
  BPMS11          : BPM_1           ;
  QSS11           : SQUAD           ,               K1S 	:= SQUAD->CALIB*I_SQS11  			;
- QSSERR11        : ERRQUAD         ,               KSL 	:= {0, K_SQSERR11  			};
  SXS11           : NSEXT           ,               K2 	:= NSEXT->CALIB*I_SXS11   		;
  SSS11           : SSEXT           ,               K2S	:= SSEXT->CALIB*I_SSS11   		;
-!CPS11 :    line=(HS11,VS11,QS11,BPMS11,QSS11,QSSERR11,SXS11,SSS11);
+!CPS11 :    line=(HS11,VS11,QS11,BPMS11,QSS11,SXS11,SSS11);
 
  HS12            : DHZ             ,               HKICK := DHZ->CALIB*I_HS12   			;
  VS12            : DVT             ,               VKICK := DVT->CALIB*I_VS12   			;
- QS12            : NQUAD           ,               K1 	:= NQUAD->CALIB*(I_QS12+K_QSERR12)  			;
+ QS12            : NQUAD           ,               K1 	:= NQUAD->CALIB*(I_QS12+dIQS)  			;
  BPMS12          : BPM_1           ;
  QSS12           : SQUAD           ,               K1S 	:= SQUAD->CALIB*I_SQS12  			;
- QSSERR12        : ERRQUAD         ,               KSL 	:= {0, K_SQSERR12  			};
  SXS12           : NSEXT           ,               K2 	:= NSEXT->CALIB*I_SXS12   		;
  SSS12           : NSEXT           ,               K2S 	:= SSEXT->CALIB*I_SSS12   		;
-!CPS12 :    line=(HS12,VS12,QS12,BPMS12,QSS12,QSSERR12,SXS12,SSS12);
+!CPS12 :    line=(HS12,VS12,QS12,BPMS12,QSS12,SXS12,SSS12);
 
  HS13            : DHZ             ,              HKICK := DHZ->CALIB*I_HS13   			;
  VS13            : DVT             ,              VKICK := DVT->CALIB*I_VS13   			;
- QS13            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS13+K_QSERR13)  			;
+ QS13            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS13+dIQS)  			;
  BPMS13          : BPM_1           ;
  QSS13           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS13  			;
- QSSERR13        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR13  			};
  SXS13           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS13   		;
  SSS13           : NSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS13   		;
-!CPS13 :    line=(HS13,VS13,QS13,BPMS13,QSS13,QSSERR13,SXS13,SSS13);
+!CPS13 :    line=(HS13,VS13,QS13,BPMS13,QSS13,SXS13,SSS13);
 
  HS14            : DHZ             ,              HKICK := DHZ->CALIB*I_HS14   			;
  VS14            : DVT             ,              VKICK := DVT->CALIB*I_VS14   			;
- QS14            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS14+K_QSERR14)  			;
+ QS14            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS14+dIQS)  			;
  BPMS14          : BPM_1           ;
  QSS14           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS14  			;
- QSSERR14        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR14  			};
  SXS14           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS14   		;
  SSS14           : NSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS14   		;
-!CPS14 :    line=(HS14,VS14,QS14,BPMS14,QSS14,QSSERR14,SXS14,SSS14);
+!CPS14 :    line=(HS14,VS14,QS14,BPMS14,QSS14,SXS14,SSS14);
 
  HS15            : DHZ             ,              HKICK := DHZ->CALIB*I_HS15   			;
  VS15            : DVT             ,              VKICK := DVT->CALIB*I_VS15   			;
- QS15            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS15+K_QSERR15)  			;
+ QS15            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS15+dIQS)  			;
  BPMS15          : BPM_1           ;
  QSS15           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS15  			;
- QSSERR15        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR15  			};
  SXS15           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS15   		;
  SSS15           : NSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS15   		;
-!CPS15 :    line=(HS15,VS15,QS15,BPMS15,QSS15,QSSERR15,SXS15,SSS15);
+!CPS15 :    line=(HS15,VS15,QS15,BPMS15,QSS15,SXS15,SSS15);
 
  HS16            : DHZ             ,              HKICK := DHZ->CALIB*I_HS16   			;
  VS16            : DVT             ,              VKICK := DVT->CALIB*I_VS16   			;
- QS16            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS16+K_QSERR16)  			;
+ QS16            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS16+dIQS)  			;
  RPOS            : RPOS_MON        ; 		   	   ! New location of RPOS after Summer 2016 shutdown
  BPMS16          : BPM_1           ;
  QSS16           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS16  			;
- QSSERR16        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR16  			};
  SXS16           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS16   		;
  SSS16           : NSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS16   		;
-!CPS16 :    line=(HS16,VS16,QS16,RPOS,BPMS16,QSS16,QSSERR16,SXS16,SSS16);
+!CPS16 :    line=(HS16,VS16,QS16,RPOS,BPMS16,QSS16,SXS16,SSS16);
 
  HS17            : DHZ             ,              HKICK := DHZ->CALIB*I_HS17   			;
  VS17            : DVT             ,              VKICK := DVT->CALIB*I_VS17   			;
- QS17            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS17+K_QSERR17)  			;
+ QS17            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS17+dIQS)  			;
  BPMS17          : BPM_1           ;
  QSS17           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS17  			;
- QSSERR17        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR17  			};
  SXS17           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS17   		;
  SSS17           : NSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS17   		;
-!CPS17 :    line=(HS17,VS17,QS17,BPMS17,QSS17,QSSERR17,SXS17,SSS17);
+!CPS17 :    line=(HS17,VS17,QS17,BPMS17,QSS17,SXS17,SSS17);
 
  HS18            : DHZ             ,              HKICK := DHZ->CALIB*I_HS18   			;
  VS18            : DVT             ,              VKICK := DVT->CALIB*I_VS18   			;
- QS18            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS18+K_QSERR18)  			;
+ QS18            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS18+dIQS)  			;
  BPMS18          : BPM_1           ;
  QSS18           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS18  			;
- QSSERR18        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR18  			};
  SXS18           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS18   		;
  SSS18           : NSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS18   		;
-!CPS18 :    line=(HS18,VS18,QS18,BPMS18,QSS18,QSSERR18,SXS18,SSS18);
+!CPS18 :    line=(HS18,VS18,QS18,BPMS18,QSS18,SXS18,SSS18);
 
  HS19            : DHZ             ,              HKICK := DHZ->CALIB*I_HS19   			;
  VS19            : DVT             ,              VKICK := DVT->CALIB*I_VS19   			;
- QS19            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS19+K_QSERR19)  			;
+ QS19            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS19+dIQS)  			;
  BPMS19          : BPM_1           ;
  QSS19           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS19  			;
- QSSERR19        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR19  			};
  SXS19           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS19   		;
  SSS19           : NSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS19   		;
-!CPS19 :    line=(HS19,VS19,QS19,BPMS19,QSS19,QSSERR19,SXS19,SSS19);
+!CPS19 :    line=(HS19,VS19,QS19,BPMS19,QSS19,SXS19,SSS19);
 
  HS20            : DHZ             ,              HKICK := DHZ->CALIB*I_HS20   			;
  VS20            : DVT             ,              VKICK := DVT->CALIB*I_VS20   			;
- QS20            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS20+K_QSERR20)  			;
+ QS20            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS20+dIQS)  			;
  BPMS20          : BPM_1           ;
  QSS20           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS20  			;
- QSSERR20        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR20  			};
  SXS20           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS20   		;
  SSS20           : NSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS20   		;
-!CPS20 :    line=(HS20,VS20,QS20,BPMS20,QSS20,QSSERR20,SXS20,SSS20);
+!CPS20 :    line=(HS20,VS20,QS20,BPMS20,QSS20,SXS20,SSS20);
 
  HS21            : DHZ             ,              HKICK := DHZ->CALIB*I_HS21   			;
  VS21            : DVT             ,              VKICK := DVT->CALIB*I_VS21   			;
- QS21            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS21+K_QSERR21)  			;
+ QS21            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS21+dIQS)  			;
  BPMS21          : BPM_1           ;
  QSS21           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS21  			;
- QSSERR21        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR21  			};
  SXS21           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS21   		;
  SSS21           : NSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS21   		;
-!CPS21 :    line=(HS21,VS21,QS21,BPMS21,QSS21,QSSERR21,SXS21,SSS21);
+!CPS21 :    line=(HS21,VS21,QS21,BPMS21,QSS21,SXS21,SSS21);
 
  HS22            : DHZ             ,              HKICK := DHZ->CALIB*I_HS22   			;
  VS22            : DVT             ,              VKICK := DVT->CALIB*I_VS22   			;
- QS22            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS22+K_QSERR22)  			;
+ QS22            : NQUAD           ,              K1 	:= NQUAD->CALIB*(I_QS22+dIQS)  			;
  BPMS22          : BPM_1           ;
  QSS22           : SQUAD           ,              K1S 	:= SQUAD->CALIB*I_SQS22  			;
- QSSERR22        : ERRQUAD         ,              KSL 	:= {0, K_SQSERR22  			};
  SXS22           : NSEXT           ,              K2 	:= NSEXT->CALIB*I_SXS22   		;
  SSS22           : NSEXT           ,              K2S 	:= SSEXT->CALIB*I_SSS22   		;
-!CPS22 :    line=(HS22,VS22,QS22,BPMS22,QSS22,QSSERR22,SXS22,SSS22);
+!CPS22 :    line=(HS22,VS22,QS22,BPMS22,QSS22,SXS22,SSS22);
 
  HS23            : DHZ             ,               HKICK := DHZ->CALIB*I_HS23   			;
  VS23            : DVT             ,               VKICK := DVT->CALIB*I_VS23   			;
- QS23            : NQUAD           ,               K1 	:= NQUAD->CALIB*(I_QS23+K_QSERR23)  			;
+ QS23            : NQUAD           ,               K1 	:= NQUAD->CALIB*(I_QS23+dIQS)  			;
  BPMS23          : BPM_1           ;
  QSS23           : SQUAD           ,               K1S 	:= SQUAD->CALIB*I_SQS23  			;
- QSSERR23        : ERRQUAD         ,               KSL 	:= {0, K_SQSERR23  			};
  SXS23           : NSEXT           ,               K2 	:= NSEXT->CALIB*I_SXS23   		;
  SSS23           : NSEXT           ,               K2S 	:= SSEXT->CALIB*I_SSS23   		;
-!CPS23 :    line=(HS23,VS23,QS23,BPMS23,QSS23,QSSERR23,SXS23,SSS23);
+!CPS23 :    line=(HS23,VS23,QS23,BPMS23,QSS23,SXS23,SSS23);
 
 //----------------corrector at long--------------------------
 
  HL01            : DHZ_L1             ,          HKICK := DHZ->CALIB*I_HL01   		;
  VL01            : DVT_L1             ,          VKICK := DVT->CALIB*I_VL01   		;
- QL01            : NQUAD_L1          ,           K1  	:= NQUAD->CALIB*(I_QL01+K_QLERR01)  	;
+ QL01            : NQUAD_L1          ,           K1  	:= NQUAD->CALIB*(I_QL01+dIQL)  	;
  BPML01          : BPM_1_L1           ;
  QSL01           : SQUAD_L1           ,          K1S 	:= SQUAD->CALIB*I_SQL01  	;
- QSLERR01        : ERRQUAD            ,          KSL 	:= {0, K_SQLERR01}		;
  SXL01           : NSEXT_L1           ,          K2 	:= NSEXT->CALIB*I_SXL01   	;
  SSL01           : SSEXT_L1           ,          K2S 	:= SSEXT->CALIB*I_SSL01   	;
-!CPL01 :    line=(HL01,VL01,QL01,BPML01,QSL01,QSLERR01,SXL01,SSL01);
+!CPL01 :    line=(HL01,VL01,QL01,BPML01,QSL01,SXL01,SSL01);
 
  HL02            : DHZ             ,          HKICK := DHZ->CALIB*I_HL02   		;
  VL02            : DVT             ,          VKICK := DVT->CALIB*I_VL02   		;
- QL02            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL02+K_QLERR02)  		;
+ QL02            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL02+dIQL)  		;
  BPML02          : BPM_1           ;
  QSL02           : SQUAD                      K1S 	:= SQUAD->CALIB*I_SQL02  		;
- QSLERR02        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR02  		};
  SXL02           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL02  		;
  SSL02           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL02  		;
-!CPL02 :    line=(HL02,VL02,QL02,BPML02,QSL02,QSLERR02,SXL02,SSL02);
+!CPL02 :    line=(HL02,VL02,QL02,BPML02,QSL02,SXL02,SSL02);
 
  HL03            : DHZ_L3             ,        	 HKICK := DHZ->CALIB*I_HL03 ;
  VL03            : DVT_L3             ,          VKICK := DVT->CALIB*I_VL03  ;
- QL03            : NQUAD_L3           ,          K1    := NQUAD->CALIB*(I_QL03+K_QLERR03) ;
+ QL03            : NQUAD_L3           ,          K1    := NQUAD->CALIB*(I_QL03+dIQL) ;
 !BPM renamed according to sketch: although it is in the regular corrector package
 !it get the "U" because upstream 
 ! BPML03          : BPM_1           , AT = 0.15;
  BPMLU3          : BPM_1_L3           ;
  QSL03           : SQUAD_L3           ,          K1S   := SQUAD->CALIB*I_SQL03;
- QSLERR03        : ERRQUAD            ,          KSL  := {0, K_SQLERR03}      ;
  SXL03           : NSEXT_L3           ,          K2    := NSEXT->CALIB*I_SXL03;
  SSL03           : SSEXT_L3           ,          K2S   := SSEXT->CALIB*I_SSL03;
-!CPL03 :    line=(HL03,VL03,QL03,BPMLU3,QSL03,QSLERR03,SXL03,SSL03);
+!CPL03 :    line=(HL03,VL03,QL03,BPMLU3,QSL03,SXL03,SSL03);
 
  HL04            : DHZ             ,             HKICK := DHZ->CALIB*I_HL04  		;
  VL04            : DVT             ,             VKICK := DVT->CALIB*I_VL04   		;
- QL04            : NQUAD           ,             K1 	:= NQUAD->CALIB*(I_QL04+K_QLERR04)  		;
+ QL04            : NQUAD           ,             K1 	:= NQUAD->CALIB*(I_QL04+dIQL)  		;
  BPML04          : BPM_1           ;
  QSL04           : SQUAD           ,             K1S	:= SQUAD->CALIB*I_SQL04  		;
- QSLERR04        : ERRQUAD         ,             KSL	:= {0, K_SQLERR04  		};
  SXL04           : NSEXT           ,             K2 	:= NSEXT->CALIB*I_SXL04   	;
  SSL04           : SSEXT           ,             K2S 	:= SSEXT->CALIB*I_SSL04  	 	;
-!CPL04 :    line=(HL04,VL04,QL04,BPML04,QSL04,QSLERR04,SXL04,SSL04);
+!CPL04 :    line=(HL04,VL04,QL04,BPML04,QSL04,SXL04,SSL04);
 
  HL05            : DHZ             ,          HKICK := DHZ->CALIB*I_HL05  		;
  VL05            : DVT             ,          VKICK := DVT->CALIB*I_VL05  		;
- QL05            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL05+K_QLERR05)  		;
+ QL05            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL05+dIQL)  		;
  BPML05          : BPM_1           ;
  QSL05           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL05  		;
- QSLERR05        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR05  		};
  SXL05           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL05   	;
  SSL05           : SSEXT           ,          K2S	:= SSEXT->CALIB*I_SSL05   	;
-!CPL05 :    line=(HL05,VL05,QL05,BPML05,QSL05,QSLERR05,SXL05,SSL05);   
+!CPL05 :    line=(HL05,VL05,QL05,BPML05,QSL05,SXL05,SSL05);   
 
  HL06            : DHZ             ,          HKICK := DHZ->CALIB*I_HL06  			;
  VL06            : DVT             ,          VKICK := DVT->CALIB*I_VL06  			;
- QL06            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL06+K_QLERR06)  			;
+ QL06            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL06+dIQL)  			;
  BPML06          : BPM_1           ;
  QSL06           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL06  			;
- QSLERR06        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR06  			};
  SXL06           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL06   		;
  SSL06           : SSEXT           ,          K2S	:= SSEXT->CALIB*I_SSL06   		;
-!CPL06 :    line=(HL06,VL06,QL06,BPML06,QSL06,QSLERR06,SXL06,SSL06);
+!CPL06 :    line=(HL06,VL06,QL06,BPML06,QSL06,SXL06,SSL06);
 
  HL07            : DHZ             ,          HKICK := DHZ->CALIB*I_HL07  			;
  VL07            : DVT             ,          VKICK := DVT->CALIB*I_VL07   			;
- QL07            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL07+K_QLERR07)  			;
+ QL07            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL07+dIQL)  			;
  BPML07          : BPM_1           ;
  QSL07           : SQUAD           ,          K1S	:= SQUAD->CALIB*I_SQL07  			;
- QSLERR07        : ERRQUAD         ,          KSL	:= {0, K_SQLERR07  			};
  SXL07           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL07  			;
  SSL07           : SSEXT           ,          K2S	:= SSEXT->CALIB*I_SSL07   		;
-!CPL07 :    line=(HL07,VL07,QL07,BPML07,QSL07,QSLERR07,SXL07,SSL07);
+!CPL07 :    line=(HL07,VL07,QL07,BPML07,QSL07,SXL07,SSL07);
 
 HL08            : DHZ             ,          HKICK := DHZ->CALIB*I_HL08  			;
  VL08            : DVT             ,          VKICK := DVT->CALIB*I_VL08   			;
- QL08            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL08+K_QLERR08)  			;
+ QL08            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL08+dIQL)  			;
  BPML08          : BPM_1           ;
  QSL08           : SQUAD           ,          K1S	:= SQUAD->CALIB*I_SQL08  			;
- QSLERR08        : ERRQUAD         ,          KSL	:= {0, K_SQLERR08  			};
  SXL08           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL08   		;
  SSL08           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL08   		;
-!CPL08 :    line=(HL08,VL08,QL08,BPML08,QSL08,QSLERR08,SXL08,SSL08);
+!CPL08 :    line=(HL08,VL08,QL08,BPML08,QSL08,SXL08,SSL08);
 
  HL09            : DHZ             ,          HKICK := DHZ->CALIB*I_HL09   			;
  VL09            : DVT             ,          VKICK := DVT->CALIB*I_VL09   			;
- QL09            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL09+K_QLERR09)  			;
+ QL09            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL09+dIQL)  			;
  BPML09          : BPM_1           ;
  QSL09           : SQUAD           ,          K1S	:= SQUAD->CALIB*I_SQL09  			;
- QSLERR09        : ERRQUAD         ,          KSL	:= {0, K_SQLERR09  			};
  SXL09           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL09   		;
  SSL09           : SSEXT           ,          K2S	:= SSEXT->CALIB*I_SSL09   		;
-!CPL09 :    line=(HL09,VL09,QL09,BPML09,QSL09,QSLERR09,SXL09,SSL09);
+!CPL09 :    line=(HL09,VL09,QL09,BPML09,QSL09,SXL09,SSL09);
 
  HL10            : DHZ             ,           HKICK := DHZ->CALIB*I_HL10   			;
  VL10            : DVT             ,           VKICK := DVT->CALIB*I_VL10   			;
- QL10            : NQUAD           ,           K1 	:= NQUAD->CALIB*(I_QL10+K_QLERR10)  			;
+ QL10            : NQUAD           ,           K1 	:= NQUAD->CALIB*(I_QL10+dIQL)  			;
  BPML10          : BPM_1           ;
  QSL10           : SQUAD           ,           K1S 	:= SQUAD->CALIB*I_SQL10  			;
- QSLERR10        : ERRQUAD         ,           KSL 	:= {0, K_SQLERR10  			};
  SXL10           : NSEXT           ,           K2 	:= NSEXT->CALIB*I_SXL10   		;
  SSL10           : SSEXT           ,           K2S 	:= SSEXT->CALIB*I_SSL10   		;
-!CPL10 :    line=(HL10,VL10,QL10,BPML10,QSL10,QSLERR10,SXL10,SSL10);
+!CPL10 :    line=(HL10,VL10,QL10,BPML10,QSL10,SXL10,SSL10);
 
  HL11            : DHZ             ,           HKICK := DHZ->CALIB*I_HL11  			;
  VL11            : DVT             ,           VKICK := DVT->CALIB*I_VL11  			;
- QL11            : NQUAD           ,           K1 	:= NQUAD->CALIB*(I_QL11+K_QLERR11)  			;
+ QL11            : NQUAD           ,           K1 	:= NQUAD->CALIB*(I_QL11+dIQL)  			;
  BPML11          : BPM_1           ;
  QSL11           : SQUAD           ,           K1S	:= SQUAD->CALIB*I_SQL11  			;
- QSLERR11        : ERRQUAD         ,           KSL	:= {0, K_SQLERR11  			};
  SXL11           : NSEXT           ,           K2 	:= NSEXT->CALIB*I_SXL11   		;
  SSL11           : SSEXT           ,           K2S 	:= SSEXT->CALIB*I_SSL11   		;
-!CPL11 :    line=(HL11,VL11,QL11,BPML11,QSL11,QSLERR11,SXL11,SSL11);
+!CPL11 :    line=(HL11,VL11,QL11,BPML11,QSL11,SXL11,SSL11);
 
 HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  VL12            : DVT             ,           VKICK := DVT->CALIB*I_VL12   			;
- QL12            : NQUAD           ,           K1 	:= NQUAD->CALIB*(I_QL12+K_QLERR12)  			;
+ QL12            : NQUAD           ,           K1 	:= NQUAD->CALIB*(I_QL12+dIQL)  			;
  BPML12          : BPM_1           ;
  QSL12           : SQUAD           ,           K1S 	:= SQUAD->CALIB*I_SQL12  			;
- QSLERR12        : ERRQUAD         ,           KSL 	:= {0, K_SQLERR12  			};
  SXL12           : NSEXT           ,           K2 	:= NSEXT->CALIB*I_SXL12   		;
  SSL12           : SSEXT           ,           K2S 	:= SSEXT->CALIB*I_SSL12   		;
-!CPL12 :    line=(HL12,VL12,QL12,BPML12,QSL12,QSLERR12,SXL12,SSL12);
+!CPL12 :    line=(HL12,VL12,QL12,BPML12,QSL12,SXL12,SSL12);
 
  HL13            : DHZ             ,           HKICK := DHZ->CALIB*I_HL13   			;
  VL13            : DVT             ,           VKICK := DVT->CALIB*I_VL13   			;
- QL13            : NQUAD           ,           K1 	:= NQUAD->CALIB*(I_QL13+K_QLERR13)  			;
+ QL13            : NQUAD           ,           K1 	:= NQUAD->CALIB*(I_QL13+dIQL)  			;
  BPML13          : BPM_1           ;
  QSL13           : SQUAD           ,           K1S 	:= SQUAD->CALIB*I_SQL13  			;
- QSLERR13        : ERRQUAD         ,           KSL 	:= {0, K_SQLERR13  			};
  SXL13           : NSEXT           ,           K2 	:= NSEXT->CALIB*I_SXL13   		;
  SSL13           : SSEXT           ,           K2S 	:= SSEXT->CALIB*I_SSL13   		;
-!CPL13 :    line=(HL13,VL13,QL13,BPML13,QSL13,QSLERR13,SXL13,SSL13);
+!CPL13 :    line=(HL13,VL13,QL13,BPML13,QSL13,SXL13,SSL13);
 
  HL14            : DHZ             ,          HKICK := DHZ->CALIB*I_HL14   			;
  VL14            : DVT             ,          VKICK := DVT->CALIB*I_VL14   			;
- QL14            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL14+K_QLERR14)  			;
+ QL14            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL14+dIQL)  			;
  BPML14          : BPM_1           ;
  QSL14           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL14  			;
- QSLERR14        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR14  			};
  SXL14           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL14   		;
  SSL14           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL14   		;
-!CPL14 :    line=(HL14,VL14,QL14,BPML14,QSL14,QSLERR14,SXL14,SSL14); 
+!CPL14 :    line=(HL14,VL14,QL14,BPML14,QSL14,SXL14,SSL14); 
 
  HL15            : DHZ             ,          HKICK := DHZ->CALIB*I_HL15   			;
  VL15            : DVT             ,          VKICK := DVT->CALIB*I_VL15   			;
- QL15            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL15+K_QLERR15)  			;
+ QL15            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL15+dIQL)  			;
  BPML15          : BPM_1           ;
  QSL15           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL15  			;
- QSLERR15        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR15  			};
  SXL15           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL15   		;
  SSL15           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL15   		;
-!CPL15 :    line=(HL15,VL15,QL15,BPML15,QSL15,QSLERR15,SXL15,SSL15); 
+!CPL15 :    line=(HL15,VL15,QL15,BPML15,QSL15,SXL15,SSL15); 
 
  HL16            : DHZ             ,          HKICK := DHZ->CALIB*I_HL16   			;
  VL16            : DVT             ,          VKICK := DVT->CALIB*I_VL16   			;
- QL16            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL16+K_QLERR16)  			;
+ QL16            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL16+dIQL)  			;
  BPML16          : BPM_1           ;
  QSL16           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL16  			;
- QSLERR16        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR16  			};
  SXL16           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL16   		;
  SSL16           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL16   		;
-!CPL16 :    line=(HL16,VL16,QL16,BPML16,QSL16,QSLERR16,SXL16,SSL16); 
+!CPL16 :    line=(HL16,VL16,QL16,BPML16,QSL16,SXL16,SSL16); 
 
  HL17            : DHZ             ,          HKICK := DHZ->CALIB*I_HL17   			;
  VL17            : DVT             ,          VKICK := DVT->CALIB*I_VL17   			;
- QL17            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL17+K_QLERR17)  			;
+ QL17            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL17+dIQL)  			;
  BPML17          : BPM_1           ;
  QSL17           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL17  			;
- QSLERR17        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR17  			};
  SXL17           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL17   		;
  SSL17           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL17   		;
-!CPL17 :    line=(HL17,VL17,QL17,BPML17,QSL17,QSLERR17,SXL17,SSL17); 
+!CPL17 :    line=(HL17,VL17,QL17,BPML17,QSL17,SXL17,SSL17); 
 
  HL18            : DHZ             ,          HKICK := DHZ->CALIB*I_HL18   			;
  VL18            : DVT             ,          VKICK := DVT->CALIB*I_VL18   			;
- QL18            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL18+K_QLERR18)  			;
+ QL18            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL18+dIQL)  			;
  BPML18          : BPM_1           ;
  QSL18           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL18  			;
- QSLERR18        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR18  			};
  SXL18           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL18   		;
  SSL18           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL18   		;
-!CPL18 :    line=(HL18,VL18,QL18,BPML18,QSL18,QSLERR18,SXL18,SSL18); 
+!CPL18 :    line=(HL18,VL18,QL18,BPML18,QSL18,SXL18,SSL18); 
 
  HL19            : DHZ             ,          HKICK := DHZ->CALIB*I_HL19   			;
  VL19            : DVT             ,          VKICK := DVT->CALIB*I_VL19   			;
- QL19            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL19+K_QLERR19)  			;
+ QL19            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL19+dIQL)  			;
  BPML19          : BPM_1           ;
  QSL19           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL19  			;
- QSLERR19        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR19  			};
  SXL19           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL19   		;
  SSL19           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL19   		;
-!CPL19 :    line=(HL19,VL19,QL19,BPML19,QSL19,QSLERR19,SXL19,SSL19); 
+!CPL19 :    line=(HL19,VL19,QL19,BPML19,QSL19,SXL19,SSL19); 
 
  HL20            : DHZ             ,          HKICK := DHZ->CALIB*I_HL20   			;
  VL20            : DVT             ,          VKICK := DVT->CALIB*I_VL20   			;
- QL20            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL20+K_QLERR20)  			;
+ QL20            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL20+dIQL)  			;
  BPML20          : BPM_1           ;
  QSL20           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL20  			;
- QSLERR20        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR20  			};
  SXL20           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL20   		;
  SSL20           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL20   		;
-!CPL20 :    line=(HL20,VL20,QL20,BPML20,QSL20,QSLERR20,SXL20,SSL20); 
+!CPL20 :    line=(HL20,VL20,QL20,BPML20,QSL20,SXL20,SSL20); 
 
  HL21            : DHZ             ,          HKICK := DHZ->CALIB*I_HL21   			;
  VL21            : DVT             ,          VKICK := DVT->CALIB*I_VL21   			;
- QL21            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL21+K_QLERR21)  			;
+ QL21            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL21+dIQL)  			;
  BPML21          : BPM_1           ;
  QSL21           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL21  			;
- QSLERR21        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR21  			};
  SXL21           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL21   		;
  SSL21           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL21   		;
-!CPL21 :    line=(HL21,VL21,QL21,BPML21,QSL21,QSLERR21,SXL21,SSL21); 
+!CPL21 :    line=(HL21,VL21,QL21,BPML21,QSL21,SXL21,SSL21); 
 
  HL22            : DHZ             ,          HKICK := DHZ->CALIB*I_HL22   			;
  VL22            : DVT             ,          VKICK := DVT->CALIB*I_VL22   			;
- QL22            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL22+K_QLERR22)  			;
+ QL22            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL22+dIQL)  			;
  BPML22          : BPM_1           ;
  QSL22           : SQUAD           ,          K1S	:= SQUAD->CALIB*I_SQL22  			;
- QSLERR22        : ERRQUAD         ,          KSL	:= {0, K_SQLERR22  			};
  SXL22           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL22   		;
  SSL22           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL22   		;
-!CPL22 :    line=(HL22,VL22,QL22,BPML22,QSL22,QSLERR22,SXL22,SSL22); 
+!CPL22 :    line=(HL22,VL22,QL22,BPML22,QSL22,SXL22,SSL22); 
 
  HL23            : DHZ             ,          HKICK := DHZ->CALIB*I_HL23   			;
  VL23            : DVT             ,          VKICK := DVT->CALIB*I_VL23   			;
- QL23            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL23+K_QLERR23)  			;
+ QL23            : NQUAD           ,          K1 	:= NQUAD->CALIB*(I_QL23+dIQL)  			;
  BPML23          : BPM_1           ;
  QSL23           : SQUAD           ,          K1S 	:= SQUAD->CALIB*I_SQL23  			;
- QSLERR23        : ERRQUAD         ,          KSL 	:= {0, K_SQLERR23  			};
  SXL23           : NSEXT           ,          K2 	:= NSEXT->CALIB*I_SXL23   		;
  SSL23           : SSEXT           ,          K2S 	:= SSEXT->CALIB*I_SSL23   		;
-!CPL23 :    line=(HL23,VL23,QL23,BPML23,QSL23,QSLERR23,SXL23,SSL23);
+!CPL23 :    line=(HL23,VL23,QL23,BPML23,QSL23,SXL23,SSL23);
 
  HL24            : DHZ             	          HKICK := DHZ->CALIB*I_HL24   			;
  VL24            : DVT             , 	          VKICK := DVT->CALIB*I_VL24   			;
- QL24            : NQUAD           , 	          K1 	:= NQUAD->CALIB*(I_QL24+K_QLERR24)  			;
+ QL24            : NQUAD           , 	          K1 	:= NQUAD->CALIB*(I_QL24+dIQL)  			;
  BPML24          : BPM_1           ;
  QSL24           : SQUAD           , 	          K1S 	:= SQUAD->CALIB*I_SQL24  			;
- QSLERR24        : ERRQUAD         , 	          KSL 	:= {0, K_SQLERR24  			};
  SXL24           : NSEXT           , 	          K2 	:= NSEXT->CALIB*I_SXL24   		;
  SSL24           : SSEXT           , 	          K2S	:= SSEXT->CALIB*I_SSL24   		;
-!CPL24 :    line=(HL24,VL24,QL24,BPML24,QSL24,QSLERR24,SXL24,SSL24); 
+!CPL24 :    line=(HL24,VL24,QL24,BPML24,QSL24,SXL24,SSL24); 
 
 //---------------------- Elements for specific main bend magnets, drifts, components ------------
 
@@ -695,7 +646,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_1         : MARKER          ;
 !SA
-!CPS24 :    line=(HS24,VS24,QS24,QSERR24,BPMS24,QSS24,QSSERR24,SXS24,SSS24);
+!CPS24 :    line=(HS24,VS24,QS24,BPMS24,QSS24,SXS24,SSS24);
 !SB
  FMAGU01         : FMAG            ;
 !MINS 
@@ -708,7 +659,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  L01C		 : DRIFT, L=0.22025*(korbump/cos(2*angle_orbump) + (1-korbump));
 ! FOIL                              ;
  L01D		 : DRIFT, L=1.0655*(korbump/cos(2*angle_orbump) + (1-korbump));
-!CPL01 :    line=(HL01,VL01,QL01,QLERR01,BPML01,QSL01,QSLERR01,SXL01,SSL01);
+!CPL01 :    line=(HL01,VL01,QL01,BPML01,QSL01,SXL01,SSL01);
  L01E		 : DRIFT, L=0.28675*(korbump/cos(2*angle_orbump) + (1-korbump));
 !ORBUMP_4    : LINE=(ORBUMPa_4_u,MULBUMP_4,ORBUMPa_4_d);                       ;
  L01F		 : DRIFT, L=0.32075;
@@ -724,7 +675,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_2         : MARKER          ;
 !SA 
-!CPS01 :    line=(HS01,VS01,QS01,QSERR01,BPMS01,QSS01,QSSERR01,SXS01,SSS01);
+!CPS01 :    line=(HS01,VS01,QS01,BPMS01,QSS01,SXS01,SSS01);
 !SB
  FMAGU02         : FMAG            ;
 !MINIS
@@ -744,7 +695,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP02L           : OLDBPM          ;
  VP02L           : OLDBPM          ;
  L02G		 : DRIFT, L=0.066;
-!CPL02 :    line=(HL02,VL02,QL02,QLERR02,BPML02,QSL02,QSLERR02,SXL02,SSL02);
+!CPL02 :    line=(HL02,VL02,QL02,BPML02,QSL02,SXL02,SSL02);
   L02H		 : DRIFT, L=0.22;
  DMAGD02         : DMAG            ;
 !MINIS
@@ -758,7 +709,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_3         : MARKER          ;
 !SA
-!CPS02 :    line=(HS02,VS02,QS02,QSERR02,BPMS02,QSS02,QSSERR02,SXS02,SSS02);
+!CPS02 :    line=(HS02,VS02,QS02,BPMS02,QSS02,SXS02,SSS02);
 !SB
  FMAGU03         : FMAG            ;
 !MINS
@@ -767,7 +718,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  L03A		 : DRIFT, L=0.31505;			   ;
 !DOG03_1    : line = (DOG03_1a_u, MULDG03_1, DOG03_1a_d);               
  L03B		 : DRIFT, L=0.30039/cos(2*angle_dogleg);
-!CPL03 :    line=(HL03,VL03,QL03,QLERR03,BPMLU3,QSL03,QSLERR03,SXL03,SSL03);
+!CPL03 :    line=(HL03,VL03,QL03,BPMLU3,QSL03,SXL03,SSL03);
  L03C		 : DRIFT, L=0.30039/cos(2*angle_dogleg);
 !DOG03_2    : line = (DOG03_2a_u, MULDG03_2, DOG03_2a_d);                          
  L03D		 : DRIFT, L=0.43067;
@@ -801,7 +752,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_4         : MARKER          ;
 !SA
-!CPS03 :    line=(HS03,VS03,QS03,QSERR03,BPMS03,QSS03,QSSERR03,SXS03,SSS03);
+!CPS03 :    line=(HS03,VS03,QS03,BPMS03,QSS03,SXS03,SSS03);
 !SB
  FMAGU04         : FMAG            ;
 !MINIS
@@ -823,7 +774,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP04L           : OLDBPM          ;
  VP04L           : OLDBPM          ;
  L04H		 : DRIFT, L=0.381;
-!CPL04 :    line=(HL04,VL04,QL04,QLERR04,BPML04,QSL04,QSLERR04,SXL04,SSL04); 
+!CPL04 :    line=(HL04,VL04,QL04,BPML04,QSL04,SXL04,SSL04); 
  L04I		 : DRIFT, L=0.251;
  DMAGD04         : DMAG            ;
 !MINIS
@@ -837,7 +788,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_5         : MARKER          ;
 !SA
-!CPS04 :    line=(HS04,VS04,QS04,QSERR04,BPMS04,QSS04,QSSERR04,SXS04,SSS04);
+!CPS04 :    line=(HS04,VS04,QS04,BPMS04,QSS04,SXS04,SSS04);
 !SB
  FMAGU05         : FMAG            ;
 !MINIS
@@ -857,7 +808,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP05L           : OLDBPM          ;
  VP05L           : OLDBPM          ;
  L05F		 : DRIFT, L=0.231;
-!CPL05 :    line=(HL05,VL05,QL05,QLERR05,BPML05,QSL05,QSLERR05,SXL05,SSL05);  
+!CPL05 :    line=(HL05,VL05,QL05,BPML05,QSL05,SXL05,SSL05);  
  L05G		 : DRIFT, L=0.251;
  DMAGD05         : DMAG            ;
 ! HALF_SP                           ;
@@ -873,7 +824,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_6         : MARKER          ;
 !SA
-!CPS05 :    line=(HS05,VS05,QS05,QSERR05,BPMS05,QSS05,QSSERR05,SXS05,SSS05);
+!CPS05 :    line=(HS05,VS05,QS05,BPMS05,QSS05,SXS05,SSS05);
 !SB
  FMAGU06         : FMAG            ;
 ! HALF_SP                          ;
@@ -894,7 +845,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP06L           : OLDBPM         ;
  VP06L           : OLDBPM         ;
  L06E		 : DRIFT, L=0.381;
-!CPL06 :    line=(HL06,VL06,QL06,QLERR06,BPML06,QSL06,QSLERR06,SXL06,SSL06);
+!CPL06 :    line=(HL06,VL06,QL06,BPML06,QSL06,SXL06,SSL06);
  L06F		 : DRIFT, L=0.251;
  DMAGD06         : DMAG            ;
 !MINIS
@@ -908,7 +859,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_7         : MARKER          ;
 !SA
-!CPS06 :    line=(HS06,VS06,QS06,QSERR06,BPMS06,QSS06,QSSERR06,SXS06,SSS06);
+!CPS06 :    line=(HS06,VS06,QS06,BPMS06,QSS06,SXS06,SSS06);
 !SB
  FMAGU07         : FMAG            ;
 !MINIS
@@ -927,7 +878,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP07L           : OLDBPM          ;
  VP07L           : OLDBPM          ;
  L07F		 : DRIFT, L=0.381; 
-!CPL07 :    line=(HL07,VL07,QL07,QLERR07,BPML07,QSL07,QSLERR07,SXL07,SSL07);
+!CPL07 :    line=(HL07,VL07,QL07,BPML07,QSL07,SXL07,SSL07);
  L07G		 : DRIFT, L=0.251;
  DMAGD07         : DMAG            ;
 !MINIS
@@ -941,7 +892,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_8         : MARKER          ;
 !SA
-!CPS07 :    line=(HS07,VS07,QS07,QSERR07,BPMS07,QSS07,QSSERR07,SXS07,SSS07);
+!CPS07 :    line=(HS07,VS07,QS07,BPMS07,QSS07,SXS07,SSS07);
 !SB
  FMAGU08         : FMAG            ;
 !MINIS
@@ -969,7 +920,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP08L           : OLDBPM          ;
  VP08L           : OLDBPM          ;
  L08K		 : DRIFT, L=0.381; 
-!CPL08 :    line=(HL08,VL08,QL08,QLERR08,BPML08,QSL08,QSLERR08,SXL08,SSL08);
+!CPL08 :    line=(HL08,VL08,QL08,BPML08,QSL08,SXL08,SSL08);
  L08L		 : DRIFT, L=0.251; 
  DMAGD08         : DMAG            ;
  FMAGD08         : FMAG            ;
@@ -981,7 +932,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_9         : MARKER          ;
 !SA
-!CPS08 :    line=(HS08,VS08,QS08,QSERR08,BPMS08,QSS08,QSSERR08,SXS08,SSS08);
+!CPS08 :    line=(HS08,VS08,QS08,BPMS08,QSS08,SXS08,SSS08);
 !SB
  FMAGU09         : FMAG            ;
 !MINIS
@@ -992,7 +943,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  VP09            : OLDBPM          ; 
  HOR_DAMP        : HDAMPER         ;
  L09B		 : DRIFT, L=0.266; 
-!CPL09 :    line=(HL09,VL09,QL09,QLERR09,BPML09,QSL09,QSLERR09,SXL09,SSL09);
+!CPL09 :    line=(HL09,VL09,QL09,BPML09,QSL09,SXL09,SSL09);
  L09C		 : DRIFT, L=0.251; 
  DMAGD09         : DMAG            ;
 !MINIS
@@ -1006,7 +957,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_10        : MARKER          ;
 !SA
-!CPS09 :    line=(HS09,VS09,QS09,QSERR09,BPMS09,QSS09,QSSERR09,SXS09,SSS09);
+!CPS09 :    line=(HS09,VS09,QS09,BPMS09,QSS09,SXS09,SSS09);
 !SB
  FMAGU10         : FMAG            ;
 !MINIS
@@ -1022,7 +973,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP10L           : OLDBPM          ;
  VP10L           : OLDBPM          ;
  L10E		 : DRIFT, L=0.381;
-!CPL10 :    line=(HL10,VL10,QL10,QLERR10,BPML10,QSL10,QSLERR10,SXL10,SSL10);
+!CPL10 :    line=(HL10,VL10,QL10,BPML10,QSL10,SXL10,SSL10);
  L10F		 : DRIFT, L=0.251;
  DMAGD10         : DMAG            ;
 !MINIS
@@ -1035,7 +986,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_11        : MARKER          ;
 !SA
-!CPS10 :    line=(HS10,VS10,QS10,QSERR10,BPMS10,QSS10,QSSERR10,SXS10,SSS10);
+!CPS10 :    line=(HS10,VS10,QS10,BPMS10,QSS10SXS10,SSS10);
  FMAGU11         : FMAG            ;
 !MINIS
  DMAGU11         : DMAG            ;
@@ -1048,7 +999,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP11L           : OLDBPM          ;
  VP11L           : OLDBPM          ;
  L11D		 : DRIFT, L=0.381;
-!CPL11 :    line=(HL11,VL11,QL11,QLERR11,BPML11,QSL11,QSLERR11,SXL11,SSL11);
+!CPL11 :    line=(HL11,VL11,QL11,BPML11,QSL11,SXL11,SSL11);
  L11E		 : DRIFT, L=0.251;
  DMAGD11         : DMAG            ;
 !MINIS
@@ -1062,7 +1013,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*---------------------------------------*/
  START_12        : MARKER          ;
 !SA
-!CPS11 :    line=(HS11,VS11,QS11,QSERR11,BPMS11,QSS11,QSSERR11,SXS11,SSS11);
+!CPS11 :    line=(HS11,VS11,QS11,BPMS11,QSS11,SXS11,SSS11);
 !SB
  FMAGU12         : FMAG            ;
 !MINIS
@@ -1082,7 +1033,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP12L           : OLDBPM          ;
  VP12L           : OLDBPM          ; 
  L12G		 : DRIFT, L=0.066;		 
-!CPL12 :    line=(HL12,VL12,QL12,QLERR12,BPML12,QSL12,QSLERR12,SXL12,SSL12);
+!CPL12 :    line=(HL12,VL12,QL12,BPML12,QSL12,SXL12,SSL12);
  L12H		 : DRIFT, L=0.251;
  DMAGD12         : DMAG            ;
  FMAGD12         : FMAG            ;
@@ -1094,14 +1045,14 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_13        : MARKER          ;
 !SA
-!CPS12 :    line=(HS12,VS12,QS12,QSERR12,BPMS12,QSS12,QSSERR12,SXS12,SSS12);
+!CPS12 :    line=(HS12,VS12,QS12,BPMS12,QSS12,SXS12,SSS12);
 !SB
  FMAGU13         : FMAG            ;
 !MINIS
  DMAGU13         : DMAG            ;
  MARK12D         : MARKER          ;
  L13A		 : DRIFT, L=5.581;
-!CPL13 :    line=(HL13,VL13,QL13,QLERR13,BPML13,QSL13,QSLERR13,SXL13,SSL13);
+!CPL13 :    line=(HL13,VL13,QL13,BPML13,QSL13,SXL13,SSL13);
  L13B		 : DRIFT, L=0.251;
  DMAGD13         : DMAG            ;
 !MINIS
@@ -1115,7 +1066,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_14        : MARKER          ;
 !SA
-!CPS13 :    line=(HS13,VS13,QS13,QSERR13,BPMS13,QSS13,QSSERR13,SXS13,SSS13);
+!CPS13 :    line=(HS13,VS13,QS13,BPMS13,QSS13,SXS13,SSS13);
 !SB
  FMAGU14         : FMAG            ;
 !MINS
@@ -1129,7 +1080,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP14L           : OLDBPM          ;
  VP14L           : OLDBPM          ;
  L14D		 : DRIFT, L=0.111;
-!CPL14 :    line=(HL14,VL14,QL14,QLERR14,BPML14,QSL14,QSLERR14,SXL14,SSL14); 
+!CPL14 :    line=(HL14,VL14,QL14,BPML14,QSL14,SXL14,SSL14); 
  L14E		 : DRIFT, L=0.251;
  DMAGD14         : DMAG            ;
 !MINS
@@ -1143,7 +1094,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_15        : MARKER          ;
 !SA
-!CPS14 :    line=(HS14,VS14,QS14,QSERR14,BPMS14,QSS14,QSSERR14,SXS14,SSS14);
+!CPS14 :    line=(HS14,VS14,QS14,BPMS14,QSS14,SXS14,SSS14);
 !SB
  FMAGU15         : FMAG            ;
 !MINS
@@ -1157,7 +1108,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP15L           : OLDBPM          ;
  VP15L           : OLDBPM          ;
  L15D		 : DRIFT, L=0.111;
-!CPL15 :    line=(HL15,VL15,QL15,QLERR15,BPML15,QSL15,QSLERR15,SXL15,SSL15); 
+!CPL15 :    line=(HL15,VL15,QL15,BPML15,QSL15,SXL15,SSL15); 
  L15E		 : DRIFT, L=0.251;
  DMAGD15         : DMAG            ;
 !MINS
@@ -1171,7 +1122,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_16        : MARKER          ;
 !SA
-!CPS15 :    line=(HS15,VS15,QS15,QSERR15,BPMS15,QSS15,QSSERR15,SXS15,SSS15);
+!CPS15 :    line=(HS15,VS15,QS15,BPMS15,QSS15,SXS15,SSS15);
 !SB
  FMAGU16         : FMAG            ;
 !MINS
@@ -1185,7 +1136,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP16L           : OLDBPM          ;
  VP16L           : OLDBPM          ;
  L16D		 : DRIFT, L=0.111;
-!CPL16 :    line=(HL16,VL16,QL16,QLERR16,BPML16,QSL16,QSLERR16,SXL16,SSL16); 
+!CPL16 :    line=(HL16,VL16,QL16,BPML16,QSL16,SXL16,SSL16); 
  L16E		 : DRIFT, L=0.251;
  DMAGD16         : DMAG            ;
 !MINS
@@ -1199,7 +1150,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_17        : MARKER          ;
 !SA
-!CPS16 :    line=(HS16,VS16,QS16,QSERR16,BPMS16,QSS16,QSSERR16,SXS16,SSS16); 
+!CPS16 :    line=(HS16,VS16,QS16,BPMS16,QSS16,SXS16,SSS16); 
 !SB
  FMAGU17         : FMAG            ;
 !MINS
@@ -1213,7 +1164,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP17L           : OLDBPM          ;
  VP17L           : OLDBPM          ;
  L17D		 : DRIFT, L=0.111;
-!CPL17 :    line=(HL17,VL17,QL17,QLERR17,BPML17,QSL17,QSLERR17,SXL17,SSL17); 
+!CPL17 :    line=(HL17,VL17,QL17,BPML17,QSL17,SXL17,SSL17); 
  L17E		 : DRIFT, L=0.251;
  DMAGD17         : DMAG            ;
 !MINS
@@ -1227,7 +1178,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_18        : MARKER          ;
 !SA
-!CPS17 :    line=(HS17,VS17,QS17,QSERR17,BPMS17,QSS17,QSSERR17,SXS17,SSS17);
+!CPS17 :    line=(HS17,VS17,QS17,BPMS17,QSS17,SXS17,SSS17);
 !SB
  FMAGU18         : FMAG            ;
 !MINS
@@ -1241,7 +1192,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP18L           : OLDBPM          ;
  VP18L           : OLDBPM          ;
  L18D		 : DRIFT, L=0.111;
-!CPL18 :    line=(HL18,VL18,QL18,QLERR18,BPML18,QSL18,QSLERR18,SXL18,SSL18); 
+!CPL18 :    line=(HL18,VL18,QL18,BPML18,QSL18,SXL18,SSL18); 
  L18E		 : DRIFT, L=0.251;
  DMAGD18         : DMAG            ;
 !MINS
@@ -1255,7 +1206,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_19        : MARKER          ;
 !SA
-!CPS18 :    line=(HS18,VS18,QS18,QSERR18,BPMS18,QSS18,QSSERR18,SXS18,SSS18);
+!CPS18 :    line=(HS18,VS18,QS18,BPMS18,QSS18,SXS18,SSS18);
 !SB
  FMAGU19         : FMAG            ;
 !MINS
@@ -1269,7 +1220,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP19L           : OLDBPM          ;
  VP19L           : OLDBPM          ;
  L19D		 : DRIFT, L=0.111;
-!CPL19 :    line=(HL19,VL19,QL19,QLERR19,BPML19,QSL19,QSLERR19,SXL19,SSL19); 
+!CPL19 :    line=(HL19,VL19,QL19,BPML19,QSL19,SXL19,SSL19); 
  L19E		 : DRIFT, L=0.251;
  DMAGD19         : DMAG            ;
 !MINS
@@ -1283,7 +1234,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_20        : MARKER          ;
 !SA
-!CPS19 :    line=(HS19,VS19,QS19,QSERR19,BPMS19,QSS19,QSSERR19,SXS19,SSS19);
+!CPS19 :    line=(HS19,VS19,QS19,BPMS19,QSS19,SXS19,SSS19);
 !SB
  FMAGU20         : FMAG            ;
 !MINS
@@ -1297,7 +1248,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP20L           : OLDBPM          ;
  VP20L           : OLDBPM          ;
  L20D		 : DRIFT, L=0.111;
-!CPL20 :    line=(HL20,VL20,QL20,QLERR20,BPML20,QSL20,QSLERR20,SXL20,SSL20);
+!CPL20 :    line=(HL20,VL20,QL20,BPML20,QSL20,SXL20,SSL20);
  L20E		 : DRIFT, L=0.251;
  DMAGD20         : DMAG            ;
 !MINS
@@ -1311,7 +1262,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_21        : MARKER          ;
 !SA
-!CPS20 :    line=(HS20,VS20,QS20,QSERR20,BPMS20,QSS20,QSSERR20,SXS20,SSS20);
+!CPS20 :    line=(HS20,VS20,QS20,BPMS20,QSS20,SXS20,SSS20);
 !SB
  FMAGU21         : FMAG            ;
 !MINS 
@@ -1325,7 +1276,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP21L           : OLDBPM          ;
  VP21L           : OLDBPM          ;
  L21D		 : DRIFT, L=0.111;
-!CPL21 :    line=(HL21,VL21,QL21,QLERR21,BPML21,QSL21,QSLERR21,SXL21,SSL21); 
+!CPL21 :    line=(HL21,VL21,QL21,BPML21,QSL21,SXL21,SSL21); 
  L21E		 : DRIFT, L=0.251;
  DMAGD21         : DMAG            , ;
 !MINS
@@ -1338,7 +1289,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_22        : MARKER          ;
 !SA
-!CPS21 :    line=(HS21,VS21,QS21,QSERR21,BPMS21,QSS21,QSSERR21,SXS21,SSS21);
+!CPS21 :    line=(HS21,VS21,QS21,BPMS21,QSS21,SXS21,SSS21);
 !SB
  FMAGU22         : FMAG            ;
 !MINS 
@@ -1352,7 +1303,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP22L           : OLDBPM          ;
  VP22L           : OLDBPM          ;
  L22D		 : DRIFT, L=0.111;
-!CPL22 :    line=(HL22,VL22,QL22,QLERR22,BPML22,QSL22,QSLERR22,SXL22,SSL22); 
+!CPL22 :    line=(HL22,VL22,QL22,BPML22,QSL22,SXL22,SSL22); 
  L22E		 : DRIFT, L=0.251;
  DMAGD22         : DMAG            ;
 !MINS 
@@ -1366,7 +1317,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_23        : MARKER          ;
 !SA
-!CPS22 :    line=(HS22,VS22,QS22,QSERR22,BPMS22,QSS22,QSSERR22,SXS22,SSS22);
+!CPS22 :    line=(HS22,VS22,QS22,BPMS22,QSS22,SXS22,SSS22);
 !SB
  FMAGU23         : FMAG            ;
 !MINS
@@ -1380,7 +1331,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP23L           : OLDBPM          ;
  VP23L           : OLDBPM          ;
  L23D		 : DRIFT, L=0.111;
-!CPL23 :    line=(HL23,VL23,QL23,QLERR23,BPML23,QSL23,QSLERR23,SXL23,SSL23);
+!CPL23 :    line=(HL23,VL23,QL23,BPML23,QSL23,SXL23,SSL23);
  L23E		 : DRIFT, L=0.251;
  DMAGD23         : DMAG            ;
 !MINS 
@@ -1394,7 +1345,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
 /*-------------------------------*/
  START_24        : MARKER;
 !SA
-!CPS23 :    line=(HS23,VS23,QS23,QSERR23,BPMS23,QSS23,QSSERR23,SXS23,SSS23);
+!CPS23 :    line=(HS23,VS23,QS23,BPMS23,QSS23,SXS23,SSS23);
 !SB
  FMAGU24         : FMAG            ;
 !MINS
@@ -1408,7 +1359,7 @@ HL12            : DHZ             ,           HKICK := DHZ->CALIB*I_HL12   			;
  HP24L           : OLDBPM          ;
  VP24L           : OLDBPM          ;
  L24D		 : DRIFT, L=0.111;
-!CPL24 :    line=(HL24,VL24,QL24,QLERR24,BPML24,QSL24,QSLERR24,SXL24,SSL24); 
+!CPL24 :    line=(HL24,VL24,QL24,BPML24,QSL24,SXL24,SSL24); 
  L24E		 : DRIFT, L=0.251;
  DMAGD24         : DMAG            ;
 !MINS
