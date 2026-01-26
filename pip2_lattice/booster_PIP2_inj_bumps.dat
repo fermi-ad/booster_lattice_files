@@ -1,0 +1,107 @@
+!**********************************************************************************************
+!   04-28-2020 dej : The following PIP-II  Magnet data are the results of fitting based upon 
+!                    the injection offsets defined below
+!                    flag_MAGENT_ON:  1 => ON and 0 => OFF
+!
+!
+!
+!
+!***********************************************************************************************
+! 800 MeV Injection bumps
+!
+! injection offsets at the foil
+!foil_off = 0.097 ; 
+!ob_tilt =  1.57079;
+!paint_ver = 0.016;
+!paint_hor = 0.005;
+
+! The elevation of the injected beam above the Booster centerline is 2*foil_off + paint_ver = 210 mm.
+
+!
+!**************  ORBUMP (angle in radian) and its saved value *******************
+!
+if (flag_ORBUMP_ON == 1 )
+{ 
+ob_ang1 :=   0.0677463;
+ob_ang2 :=  -0.0677463;
+ob_ang3 :=  -0.0677463;
+ob_ang4 :=   0.0677463;
+!
+ob_ang1_save := ob_ang1;
+ob_ang2_save := ob_ang2;
+ob_ang3_save := ob_ang3;
+ob_ang4_save := ob_ang4;
+}
+else  
+{
+ob_ang1 :=   0.0;
+ob_ang2 :=   0.0;
+ob_ang3 :=   0.0;
+ob_ang4 :=   0.0;
+}
+
+!
+! Dipole field of the ORBUMP magnets
+!
+!b_ob1_800          =         3.7342923673 ;
+
+!
+!************* Vertical painting (angles in radians) *******************
+!
+! These angles are for the full 16mm offset of the Booster closed orbit to put the center of the Booster closed orbit 
+! at the Linac beam vertical elevation at the foil.
+! We use only the first 11 mm offset for painting, the last 5 mm motion moves beam rapidly off foil.
+
+if (flag_V_PAINT_ON == 1 )
+{
+! Angle in mr
+pk1_kick           :=         0.0026898312 ;
+pk2_kick           :=        -0.0011048430 ;
+pk3_kick           :=        -0.0012556380 ;
+pk4_kick           :=         0.0028921265 ;
+}
+else  ! TURN OFF
+{
+pk1_kick           :=         0.0;
+pk2_kick           :=         0.0;
+pk3_kick           :=         0.0;
+pk4_kick           :=         0.0;
+}
+!
+! vertical painting magnet dipole fields in kG (Only for information)
+!
+!pk1_b              =         0.6442172515 ;
+!pk2_b              =        -0.2646109931 ;
+!pk3_b              =        -0.3007265454 ;
+!pk4_b              =         0.6926671717 ;
+
+!
+!****************  Horizontal painting  magnet currents in Amps  *****************
+!
+! Trim currents
+if(flag_H_PAINT_ON == 1)
+{
+i_hs09             :=         0.0716511215 ;
+i_hs10             :=         0.0993282987 ;
+i_hs11             :=         0.0999164484 ;
+i_hs12             :=         0.0706830304 ;
+}
+else   !TURN OFF
+{
+i_hs09             :=         0.0;
+i_hs10             :=         0.0;
+i_hs11             :=         0.0;
+i_hs12             :=         0.0;
+}
+!
+! Angle in mr
+!ang_hs09           =         0.2238624945 ;
+!ang_hs10           =         0.3103354176 ;
+!ang_hs11           =         0.3121729975 ;
+!ang_hs12           =         0.2208378484 ;
+! Integrated field in G-m
+!ib_hs09            =        10.9267960289 ;
+!ib_hs10            =        15.1475655468 ;
+!ib_hs11            =        15.2372583766 ;
+!ib_hs12            =        10.7791621367 ;
+

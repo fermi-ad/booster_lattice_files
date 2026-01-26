@@ -1,0 +1,288 @@
+  title, 'FNAL PIP2 Booster lattice';
+! Forked from 4/20/2020 MADX Booster lattice by D. Johnson and J. Eldred.
+! L11 components moved to L01 (artificially)
+! L11 D-magnets shortened and moved.
+! Injection energy moved to 800 MeV, timeslot=1.
+! L11 injection region, horz and vert painting magnets added by D. Johnson.
+!
+!
+/**************************************************************************************************/
+/********  This is the MADX file used to calculate PIP-II Booster TWISS FUNCTIONS & SURVEY ********/
+/********    This file typically outputs the values ad the downstream end of the magnet   *********/
+/**************************************************************************************************/
+ option, -echo, warn, -info;
+ set,  format="20.10f";
+ setplot, rscale= 1.3;
+ option, RBARC=TRUE;
+ 
+PSHIFT = 0.0 ;
+
+/************** PIP-II Booster flags *********************/
+/********  Flags to turn of injection bumps **************/
+/********  Flag to turn off DOGLEG ***********************/
+/**********  1 = ON & 0 = OFF ****************************/
+/********* Default:  ALL parameters = 1   ****************/
+flag_ORBUMP_ON  = 1;  ! used in file: booster_inj_bumps.dat
+flag_H_PAINT_ON = 1;  ! used in file: booster_inj_bumps.dat
+flag_V_PAINT_ON = 1;  ! used in file: booster_inj_bumps.dat
+flag_DOG03_ON   = 1;  ! used in *.madx below
+
+/***********************************************************************************************/
+/*******   Choose time in acceleration ramp to use by choosing a "slot" on the *****************/
+/*******    magnet setting table (ie QL.dat table):    *****************************************/
+/*******   Set errorSwicth=1 if error tables are needed to be used. ****************************/
+/*******   Set isLOCO = 1 if this file is used for LOCO fitting.  ******************************/
+/*******   IMPORTANT!!!!! For LOCO fitting, ****************************************************/
+/*******      timeSlot must be set to 1 because there there will only **************************/
+/*******      be 1 data line in QL*.dat, QS*.dat etc. ******************************************/
+/***********************************************************************************************/
+
+  timeSlot=1; // user selected time slot. DEFAULT FOR PIP-II should be timeSlot =1  
+  value, timeSlot;
+  
+/***********************************/
+TITLE, "PIP-II 800 MeV Injection";
+/***********************************/
+
+/************ read in settings for corrector package magnets, dogleg, and pseudo-quad errors from tables: ***************************/
+
+! strength of doglegs, harmonic correctors, and other DC elements:
+READMYTABLE,file="DC.dat",table=DCtable;
+setvars, table=DCtable,row= 1;
+!!!!!!!!! check to see if we keep the DOGLES ON or OFF!!!!!!!!!!!!!!!
+if(flag_DOG03_ON == 0) 
+{
+i_DOGL03 = 0.0;
+}
+value, i_DOGL03;
+!
+! strengths of corrector package elements:
+READMYTABLE,file="QL.dat",table=QLtable;
+setvars, table=QLtable,row= timeSlot;
+READMYTABLE,file="QS.dat",table=QStable;
+setvars, table=QStable,row= timeSlot;
+READMYTABLE,file="SQL.dat",table=SQLtable;
+setvars, table=SQLtable,row= timeSlot;
+READMYTABLE,file="SQS.dat",table=SQStable;
+setvars, table=SQStable,row= timeSlot;
+READMYTABLE,file="SXL.dat",table=SXLtable;
+setvars, table=SXLtable,row= timeSlot;
+READMYTABLE,file="SXS.dat",table=SXStable;
+setvars, table=SXStable,row= timeSlot;
+READMYTABLE,file="SSL.dat",table=SSLtable;
+setvars, table=SSLtable,row= timeSlot;
+READMYTABLE,file="SSS.dat",table=SSStable;
+setvars, table=SSStable,row= timeSlot;
+!
+!
+t0=time;   ! time is defined by the time value at timeSlot (defined above)
+t0 = 2.0;  ! fix time in ramp at 2 ms ~BMIN
+value, time;
+value, t0;
+
+READMYTABLE,file="qsdqsf.dat",table=qsqdtable;
+setvars, table=qsqdtable,row= timeSlot;
+
+
+/*****************************************************************************
+  Now, set up for PIP II  energies.
+  NEED TO CHECK: pc is calculated correctly for the new ramp
+*****************************************************************************/
+
+KE0_old=.4;  									    ! PIP 400 MeV injection kinetic energy (in GeV)
+KE0=.8;  											! PIP2 800 MeV injection kinetic energy (in GeV)
+KEext=8.0;  										! 8 GeV extraction kinetic energy (in GeV)
+pcInj_old = sqrt(( KE0_old+ pmass)*( KE0_old+ pmass)- pmass* pmass); 	    ! PIP injection momentum
+pcInj = sqrt(( KE0+ pmass)*( KE0+ pmass)- pmass* pmass); 		 			! PIP2 injection momentum
+pcExt = sqrt(( KEext+ pmass)*( KEext+ pmass)- pmass*pmass); 	 			! extraction momentum
+pc = (pcExt + pcInj)/2 - (pcExt - pcInj)/2 * cos(2*PI*15*(t0-2)/1000);		! momentum at chosen time point
+!pc = pcInj;
+kpc=pcInj_old/pc;                                    !used to scale harmonics and angle of DOG3
+Brho= pc/ clight *1e9;                               !Brho at selected time Slot
+Brho0= pcInj/ clight *1e9;							 !Brho at PIP-II injection momentum
+Brho0_old= pcInj_old/ clight *1e9;                   !Brho at PIP injection momentum
+
+!These must be defined before calling the booster_PIP2.ele file
+etot=sqrt(pc*pc+pmass*pmass);				         ! total energy
+ke1 = etot - pmass;					                 ! kinetic energy at that breakpoint
+ 
+value, angle_dogleg;
+
+!*****************************************************************************
+!********************* FILES MUST BE CALLED IN THIS ORDER ********************
+!*****************************************************************************
+call, file = 'booster_PIP2_inj_bumps.dat'; 
+call, file = 'booster_PIP2.ele';
+call, file = 'booster_PIP2_L11_config_2.seq';
+
+
+
+beam, particle = PROTON, pc= pc;
+use, sequence = booster;
+
+/*********** define dispersion correctly (since MADX uses pt, not delta p, as 5th variable) *****/
+beta=sqrt(1-1/beam->gamma^2);
+dispx:=beta*table(twiss,dx); ! Delta_x=Dispx*Delta_p/p;
+dispy:=beta*table(twiss,dy); ! Delta_y=Dispy*Delta_p/p;
+/*****************************************************************************/
+
+
+!!DEJ addition
+SURVEY;
+WRITE, table=survey, file=survey_PIP2.outx;
+!
+! uncomment STOP to write only survey file
+!
+!STOP;
+
+// Injection Device Parameters
+value, LORB_eff;
+value, ORB_QD->L;
+value, LORB_FF;
+value, VPK_LENGTH;
+value, end_VPK->L;
+value, VPK_FF;
+
+value, FOIL->L;
+value, FOIL_END->L;
+value, FOIL_INSERT;
+
+// Length of empty straight
+value, LS01->L;
+value, LS02->L;
+
+// Drift Lengths between ORBUMPS 			(current 0.34181m as of 4/30/2020 dej)
+value, drift_01->L;							
+value, drift_02->L;
+
+// Drift lengths around Absorber  ( current total length is 0.8m as of 4/30/2020 dej)
+value, abs->L;
+value, drift_08->L;
+value, drift_09->L;
+
+value, CORR_BPM->L;
+value, CORR_FLNG->L;
+value, DRIFT_L11_STRAIGHT->L;
+
+// Drift length used in injection line... need to check its value dej4/30/2020 
+value, drift_inj->L;
+
+// Parameters related to shortening the D gradient magnet either side of injection straight
+value, cut_length_d;					!reduction in physical length of injection gradient magnet
+value, cut_length_f;					!not used should be 0
+value, fraction_d;
+value, (1-fraction_d);					!used to scale K1 & K2 of modified D gradient magnet
+value, dmagd_11_shift;					! amount the D magnet is shifted from its nominal bend center
+value, drift_dmagi->L;					! drift length on straight side of dmag from cut and shift
+value, drift_dmago->L;					! drift length on FMAG side of dmag from cut and shift
+value, modd;
+value, modf; 
+value, minS;
+value, F_D_11_drift ->L;
+value, D_F_11_drift ->L;
+
+value, DMAGU11->L;
+value, DMAGU11->ANGLE;
+value, DMAGU11->K1;
+value, DMAGU11->K2;
+
+// various momentum 
+value, pcInj;						  !injection moved
+value, pcExt; 						   !extraction momentum
+value, (pcExt-pcInj);
+value, (cos(2*PI*15*(t0-2)/1000));    !used in pc calc based in time during ramo
+value, pc;
+value, I_QL11;
+
+// Selected gradient magnet body fields as a function of timeSlot & correctors
+value, qsf;
+value, qsd;
+value, ssf;
+value, ssd;
+value, I_QL10;
+value, I_QS10;
+value, I_SQL10;
+value, I_SQS10;
+value, I_SSL10;
+value, I_SSS10;
+value, I_SXL10;
+value, I_SXS10;
+
+//
+value, pc;				!momentum at the timeslot (or t0) selected
+value, kpc;				!used to scale harmonics and angle of DOG3
+value, angle_dogleg;	!angle in L03 dogleg defined at 400 MeV  & used to scale arc length thru dogleg
+value, KE0;				!injection kinetic energy
+value, pmass;
+value, etot;			!total energy
+value, ke1;				!kinetic energy
+value, Brho;			!momentum at selected time slot
+value, Brho0;			!momentum at 800 MeV injection	
+value, Brho0_old;		!momentum at 400 MeV injection
+
+/*********************************************************************************************/
+/********************************** Start the Procedures *************************************/
+/*********************************************************************************************/
+!
+! used to select which elements to print... good for comparing files .. just uncomment for output of element class
+!
+select, flag=twiss,class=SCTR_MARK, column=name,s,L;
+!select, flag = twiss, class=QUADRUPOLE, column = name, s, KL;
+!select, flag = twiss, class=NQUAD, column = name, s, L,k1L,k2L;
+!select, flag = twiss, class=NQUAD_L1, column = name, s, L,k1L,k2L;
+!select, flag = twiss, class=NQUAD_L3, column = name, s,L, k1L,k2L;
+!select, flag = twiss, class=RBEND, column = name, s,L,k1L,k2L, angle;
+!select, flag = twiss, class=SBEND, column = name, s,L,k1L,k2L,angle;
+
+
+select, flag=twiss,  column=name, s,l,K1L,K2L,y,py,x,px, BETX,BETY,ALFX,ALFY,mux,muy,DX,DPX,DY,DPY,dispx,dispy;
+!twiss , DELTAP = 0.0, refer=centre, table=TWISS, file='./booster.outc';
+twiss , DELTAP = 0.0,  table=TWISS, file='./booster_PIP2.outx';
+
+! Just plot Booster lattice functions 
+!
+plot, HAXIS=s,
+      VAXIS1=betx,bety,VAXIS2=dispx,VMIN=-20,0,
+      VMAX=40,15,
+      STYLE=1,
+      COLOUR=100,HMIN=0,HMAX=500, 
+      TITLE="1:PIP-II Booster";
+
+plot, HAXIS=s,
+      VAXIS1=betx,bety,VAXIS2=x,y,VMIN=-20,-0.005,
+      VMAX=40,0.12,
+      STYLE=1,
+      COLOUR=100,HMIN=0,HMAX=500, 
+      TITLE="2:PIP-II Booster w/inj bumps";
+	  
+plot, HAXIS=s,
+      VAXIS1=betx,bety,VAXIS2=x,y,VMIN=-20,-0.00,
+      VMAX=40,0.120,
+      STYLE=1,
+      COLOUR=100,HMIN=170,HMAX=240, 
+      TITLE="3:PIP-II Booster L11 inj bumps";
+	  
+plot, HAXIS=s,
+      STYLE=1,
+      COLOUR=100,      
+      VAXIS1=betx,bety,VAXIS2= dispx,VMIN=0,0, 
+      VMAX=40,5,HMIN=158,HMAX=256, 
+      TITLE="4:PIP-II Booster L11";
+
+plot, HAXIS=s,
+      STYLE=1,
+      COLOUR=100,      
+      VAXIS1=x,y,VAXIS2=dispx,VMIN=-0.0,0, 
+      VMAX=0.12,5,HMIN = 170,HMAX= 250, 
+      TITLE="5:PIP-II Booster L11 bumps";
+	  
+plot, HAXIS=s,
+      VAXIS1=betx,bety,VAXIS2=x,y,VMIN=-20,-0.002,
+      VMAX=40,0.005,
+      STYLE=1,
+      COLOUR=100,HMIN=0,HMAX=500, 
+      TITLE="6:PIP-II Booster L11 inj bumps";
+
+
+stop;
+!
