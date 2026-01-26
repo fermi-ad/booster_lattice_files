@@ -41,6 +41,7 @@ timeSlot=3; // user selected time slot
 dIQS = 0.0;
 dIQL = 0.0;
 
+
 /*****************************************************************************/
 
 /************ read in settings for corrector package magnets, dogleg, and pseudo-quad errors from tables: ***************************/
@@ -121,57 +122,18 @@ chy:=beta*table(summ, dq2);
 value, chx, chy;
 
 
-If (isLOCO==1) {
-  select, flag=twiss, clear;
-  select, flag=twiss, column=name,s,l,tilt,angle,X,PX,Y,PY,PT,k1L,k2L,k1SL,k2SL,BETX,BETY,ALFX,ALFY,mux,muy,dispx,dispy;
-  twiss, DELTAP = PSHIFT, refer=centre, table=TWISS, file='twiss.outx';
+select, flag=twiss, clear;
+select, flag=twiss, column=name,s,l,tilt,angle,k1L,k2L,k1SL,k2SL,BETX,BETY,ALFX,ALFY,mux,muy,dispx,dispy;
+twiss , DELTAP = PSHIFT, refer=centre, table=TWISS, file='./booster.outx';
 
-  X0  = table(twiss,BOOSTER$START,X );
-  PX0 = table(twiss,BOOSTER$START,PX);
-  Y0  = table(twiss,BOOSTER$START,Y );
-  PY0 = table(twiss,BOOSTER$START,PY);
-  PT0 = table(twiss,BOOSTER$START,PT);
-
-  dX = 1e-4; dPX = 0.5e-5;
-  dY = 1e-4; dPY = 1e-5;
-  dPT = 0.5e-4;
-
-  value, X0, PX0, Y0, PY0, PT0, dX, dPX, dY, dPY, dPT;
-
-  select, flag=twiss, clear;
-  select, flag=twiss, column=name,s,l,X,PX,Y,PY;
-  twiss, X=X0+dX, PX=PX0, Y=Y0, PY=PY0, PT=PT0, DELTAP = PSHIFT, refer=centre, table=TWISS, file='r_dX.outx';
-
-  select, flag=twiss, clear;
-  select, flag=twiss, column=name,s,l,X,PX,Y,PY;
-  twiss, X=X0, PX=PX0+dPX, Y=Y0, PY=PY0, PT=PT0, DELTAP = PSHIFT, refer=centre, table=TWISS, file='r_dPX.outx';
-
-  select, flag=twiss, clear;
-  select, flag=twiss, column=name,s,l,X,PX,Y,PY;
-  twiss, X=X0, PX=PX0, Y=Y0+dY, PY=PY0, PT=PT0, DELTAP = PSHIFT, refer=centre, table=TWISS, file='r_dY.outx';
-
-  select, flag=twiss, clear;
-  select, flag=twiss, column=name,s,l,X,PX,Y,PY;
-  twiss, X=X0, PX=PX0, Y=Y0, PY=PY0+dPY, PT=PT0, DELTAP = PSHIFT, refer=centre, table=TWISS, file='r_dPY.outx';
-
-  select, flag=twiss, clear;
-  select, flag=twiss, column=name,s,l,X,PX,Y,PY;
-  twiss, X=X0, PX=PX0, Y=Y0, PY=PY0, PT=PT0+dPT, DELTAP = PSHIFT, refer=centre, table=TWISS, file='r_dPT.outx';
-}
-else {
-  select, flag=twiss, clear;
-  select, flag=twiss, column=name,s,l,tilt,angle,k1L,k2L,k1SL,k2SL,BETX,BETY,ALFX,ALFY,mux,muy,dispx,dispy;
-  twiss , DELTAP = PSHIFT, refer=centre, table=TWISS, file='./booster.outx';
-
-  plot, HAXIS=s,SPLINE,
+plot, HAXIS=s,SPLINE,
         VAXIS1=betx,bety,VAXIS2=dispx,VMIN=-20,0,
         VMAX=40,15,
 	STYLE=1,
 	COLOUR=100,
         TITLE="Booster";
-  plot, vaxis=betx,bety,dispx haxis=s;
+plot, vaxis=betx,bety,dispx haxis=s;
 
-}
 
 plot, file="results/twiss",HAXIS=s,STYLE=100,SPLINE,
       VAXIS1=betx,bety,VAXIS2=dispx,VMIN=-20,0,
