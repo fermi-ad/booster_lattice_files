@@ -1,0 +1,50 @@
+!Values of RF voltage (in kV) and RF synchronous phase (in degrees).
+!Conversion to MADX units, RF frequency calculations are in booster.ele
+
+RF01_V = 0.0;
+RF02_V = 0.0;
+RF03_V = 0.0;
+RF04_V = 0.0;
+RF05_V = 0.0;
+RF06_V = 0.0;
+RF07_V = 0.0;
+RF08_V = 0.0;
+RF09_V = 0.0;
+RF10_V = 0.0;
+RF11_V = 0.0;
+RF12_V = 0.0;
+RF13_V = 0.0;
+RF14_V = 0.0;
+RF15_V = 0.0;
+RF16_V = 0.0;
+RF17_V = 0.0;
+RF18_V = 0.0;
+RF19_V = 0.0;
+RF20_V = 0.0;
+RF21_V = 0.0;
+RF22_V = 0.0;
+
+RF01_PH = 0.0;
+RF02_PH = 0.0;
+RF03_PH = 0.0;
+RF04_PH = 0.0;
+RF05_PH = 0.0;
+RF06_PH = 0.0;
+RF07_PH = 0.0;
+RF08_PH = 0.0;
+RF09_PH = 0.0;
+RF10_PH = 0.0;
+RF11_PH = 0.0;
+RF12_PH = 0.0;
+RF13_PH = 0.0;
+RF14_PH = 0.0;
+RF15_PH = 0.0;
+RF16_PH = 0.0;
+RF17_PH = 0.0;
+RF18_PH = 0.0;
+RF19_PH = 0.0;
+RF20_PH = 0.0;
+RF21_PH = 0.0;
+RF22_PH = 0.0;
+
+

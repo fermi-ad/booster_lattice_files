@@ -84,6 +84,7 @@ setvars, table=SSStable,row= timeSlot;
 !
 READMYTABLE,file="qsdqsf.dat",table=qsqdtable;
 setvars, table=qsqdtable,row= timeSlot;
+call, file = 'RF.dat';
 
 
 t0=time;
@@ -107,10 +108,6 @@ value, pmass, pc, etot, ke1;
 
 call, file = 'booster.ele';
 call, file = 'booster.seq';
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!! corrector:
-!I_HS24 = 0.05;
-
 
 
 beam, particle = PROTON, pc= pc;  
