@@ -1,50 +1,64 @@
 !Values of RF voltage (in kV) and RF synchronous phase (in degrees).
 !Conversion to MADX units, RF frequency calculations are in booster.ele
 
-RF01_V = 0.0;
-RF02_V = 0.0;
-RF03_V = 0.0;
-RF04_V = 0.0;
-RF05_V = 0.0;
-RF06_V = 0.0;
-RF07_V = 0.0;
-RF08_V = 0.0;
-RF09_V = 0.0;
-RF10_V = 0.0;
-RF11_V = 0.0;
-RF12_V = 0.0;
-RF13_V = 0.0;
-RF14_V = 0.0;
-RF15_V = 0.0;
-RF16_V = 0.0;
-RF17_V = 0.0;
-RF18_V = 0.0;
+!Paraphase pattern, with two spare cavities that can be A or B.
+!BAAB BAAB ABBA ABBA ABXXBA
+!Typical RF cavity values for end of RF capture.
+
+RFA_V = 30;                    !kV on A-type RF cavities
+RFB_V = 30;                    !kV on B-type RF cavities
+RF_phs = 0.0;                  !degrees common accelerating phase in A & B cavities
+RF_paraph = 0.0;               !degrees paraphase between A & B cavities
+RFA_PH = RF_phs+(RF_paraph/2); 
+RFB_PH = RF_phs-(RF_paraph/2); 
+
+RF01_V = RFB_V;
+RF02_V = RFA_V;
+RF03_V = RFA_V;
+RF04_V = RFB_V;
+RF05_V = RFB_V;
+RF06_V = RFA_V;
+RF07_V = RFA_V;
+RF08_V = RFB_V;
+RF09_V = RFA_V;
+RF10_V = RFB_V;
+RF11_V = RFB_V;
+RF12_V = RFA_V;
+RF13_V = RFA_V;
+RF14_V = RFB_V;
+RF15_V = RFB_V;
+RF16_V = RFA_V;
+RF17_V = RFA_V;
+RF18_V = RFB_V;
 RF19_V = 0.0;
 RF20_V = 0.0;
-RF21_V = 0.0;
-RF22_V = 0.0;
+RF21_V = RFB_V;
+RF22_V = RFA_V;
 
-RF01_PH = 0.0;
-RF02_PH = 0.0;
-RF03_PH = 0.0;
-RF04_PH = 0.0;
-RF05_PH = 0.0;
-RF06_PH = 0.0;
-RF07_PH = 0.0;
-RF08_PH = 0.0;
-RF09_PH = 0.0;
-RF10_PH = 0.0;
-RF11_PH = 0.0;
-RF12_PH = 0.0;
-RF13_PH = 0.0;
-RF14_PH = 0.0;
-RF15_PH = 0.0;
-RF16_PH = 0.0;
-RF17_PH = 0.0;
-RF18_PH = 0.0;
+RF01_PH = RFB_PH;
+RF02_PH = RFA_PH;
+RF03_PH = RFA_PH;
+RF04_PH = RFB_PH;
+RF05_PH = RFB_PH;
+RF06_PH = RFA_PH;
+RF07_PH = RFA_PH;
+RF08_PH = RFB_PH;
+RF09_PH = RFA_PH;
+RF10_PH = RFB_PH;
+RF11_PH = RFB_PH;
+RF12_PH = RFA_PH;
+RF13_PH = RFA_PH;
+RF14_PH = RFB_PH;
+RF15_PH = RFB_PH;
+RF16_PH = RFA_PH;
+RF17_PH = RFA_PH;
+RF18_PH = RFB_PH;
 RF19_PH = 0.0;
 RF20_PH = 0.0;
-RF21_PH = 0.0;
-RF22_PH = 0.0;
+RF21_PH = RFB_PH;
+RF22_PH = RFA_PH;
+
+RFSUM = RF01_V*cos(RF01_PH)+RF02_V*cos(RF02_PH)+RF03_V*cos(RF03_PH)+RF04_V*cos(RF04_PH)+RF05_V*cos(RF05_PH)+RF06_V*cos(RF06_PH)+RF07_V*cos(RF07_PH)+RF08_V*cos(RF08_PH)+RF09_V*cos(RF09_PH)+RF10_V*cos(RF10_PH)+RF11_V*cos(RF11_PH)+RF12_V*cos(RF12_PH)+RF13_V*cos(RF13_PH)+RF14_V*cos(RF14_PH)+RF15_V*cos(RF15_PH)+RF16_V*cos(RF16_PH)+RF17_V*cos(RF17_PH)+RF18_V*cos(RF18_PH)+RF19_V*cos(RF19_PH)+RF20_V*cos(RF20_PH)+RF21_V*cos(RF21_PH)+RF22_V*cos(RF22_PH);
+value, RFSUM;
 
 

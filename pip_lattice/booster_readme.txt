@@ -190,5 +190,7 @@
 !   Removed legacy support for LOCO code, individual quad errors and err.dat files
 !   Added dIQL and dIQS variables and corresponding MATCH module to booster.madx to allow for manual or automatic adjustment of tunes.
 !   Changed BRF from drifts to RF cavities, Added RF.dat file to read in the voltages and phases for the RF.
-!		Right now all the values are defaulted to zero, and the RF.dat is single set of values rather than a ramp table.
+!       The RF.dat is single set of values rather than a ramp table.
+!       Values organized by paraphase implementation, although RF values can also be set individually.
+!		Right now the default values total to 600 kV over 20 RF cavities, zero phase, corresponding to moment at the end of RF capture.
 
