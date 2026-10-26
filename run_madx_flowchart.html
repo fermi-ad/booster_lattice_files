@@ -1,0 +1,390 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>run_madx Flow Charts</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column of notes; each diagram full width in its own scroll box.
+   Color: lab blue for steps, lab orange for decisions, neutral for files, red for errors. */
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --fg: #14202e;
+  --muted: #4f5d6e;
+  --line: #d3dae3;
+  --blue: #004c97;
+  --blue-soft: #e3edf8;
+  --orange: #e87722;
+  --orange-soft: #fdeedf;
+  --file-soft: #eef1f4;
+  --file-line: #7d8896;
+  --err: #b42318;
+  --err-soft: #fbe7e5;
+  --code-bg: #ffffff;
+  --code-fg: #003a75;
+  --code-line: #a9c3e2;
+  --int-bg: #e9ecef;
+  --int-fg: #4a5563;
+  --int-line: #c9ced5;
+  --edge: #6b7685;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-diagram: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-diagram-mono: ui-monospace, Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1620; --surface: #16202c; --fg: #e4eaf1; --muted: #9eabba; --line: #2b3847;
+    --blue: #7fb2ec; --blue-soft: #15304f; --orange: #f5a25d; --orange-soft: #43290f;
+    --file-soft: #1f2934; --file-line: #8794a3; --err: #f2867c; --err-soft: #46191a;
+    --code-bg: #0c1622; --code-fg: #a9cdf5; --code-line: #33557c; --int-bg: #232a33; --int-fg: #aab4c0; --int-line: #3a4450; --edge: #8b97a6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1620; --surface: #16202c; --fg: #e4eaf1; --muted: #9eabba; --line: #2b3847;
+  --blue: #7fb2ec; --blue-soft: #15304f; --orange: #f5a25d; --orange-soft: #43290f;
+  --file-soft: #1f2934; --file-line: #8794a3; --err: #f2867c; --err-soft: #46191a;
+  --code-bg: #0c1622; --code-fg: #a9cdf5; --code-line: #33557c; --int-bg: #232a33; --int-fg: #aab4c0; --int-line: #3a4450; --edge: #8b97a6;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  padding-inline: 20px;
+  padding-block: 32px 64px;
+}
+main { max-width: 1100px; margin-inline: auto; display: flex; flex-direction: column; gap: 40px; }
+header { display: flex; flex-direction: column; gap: 10px; max-width: 70ch; padding-bottom: 20px; border-bottom: 3px solid var(--orange); }
+h1 { font-size: 1.8rem; font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -0.01em; color: var(--blue); }
+h2 { font-size: 1.2rem; font-weight: 600; margin: 0; text-wrap: balance; color: var(--blue); }
+p { margin: 0; }
+.lede { color: var(--muted); }
+code { font-family: var(--font-mono); font-size: 0.86em; color: var(--code-fg); background: var(--blue-soft); padding: 1px 5px; border-radius: 3px; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); font-weight: 500; }
+section { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.notes { max-width: 72ch; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.subhead { font-size: 0.95rem; font-weight: 600; margin-top: 8px; color: var(--fg); }
+
+/* Legend: a swatch in each node style */
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 28px; max-width: 960px; }
+.legend div { display: flex; gap: 12px; align-items: center; }
+.sw { flex: none; width: 34px; height: 22px; border: 2px solid; border-radius: 4px; }
+.sw.step { background: var(--blue-soft); border-color: var(--blue); }
+.sw.decide { background: var(--orange-soft); border-color: var(--orange); transform: rotate(45deg) scale(0.7); border-radius: 2px; width: 24px; height: 24px; margin-inline: 5px; }
+.sw.file { background: var(--file-soft); border-color: var(--file-line); border-radius: 50% / 30%; }
+.sw.err { background: var(--err-soft); border-color: var(--err); }
+.sw.io { background: var(--surface); border: 3px solid var(--blue); border-radius: 8px; }
+.sw.box { background: var(--int-bg); border: 1.5px solid var(--int-line); border-radius: 6px; width: 40px; height: 26px; }
+.sw.line { border: none; height: 0; border-top: 2px solid var(--edge); border-radius: 0; }
+.sw.dot { border: none; height: 0; border-top: 2px dashed var(--edge); border-radius: 0; }
+
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; overflow-x: auto; }
+.diagram pre { margin: 0; min-width: 640px; }
+
+/* Mermaid nodes, colored from the tokens so both themes work */
+.nodeLabel, .edgeLabel { font-family: var(--font-diagram) !important; }
+.mermaid-diagram .nodeLabel, .mermaid-diagram .edgeLabel, .mermaid-diagram .label { color: var(--fg) !important; }
+.mermaid-diagram .node.step rect { fill: var(--blue-soft) !important; stroke: var(--blue) !important; }
+.mermaid-diagram .node.decide polygon { fill: var(--orange-soft) !important; stroke: var(--orange) !important; }
+.mermaid-diagram .node.file path, .mermaid-diagram .node.file rect { fill: var(--file-soft) !important; stroke: var(--file-line) !important; }
+.mermaid-diagram .node.warn rect { fill: var(--orange-soft) !important; stroke: var(--orange) !important; stroke-dasharray: 5 3; }
+.mermaid-diagram .node.io rect, .mermaid-diagram .node.io path { fill: var(--surface) !important; stroke: var(--blue) !important; stroke-width: 3px !important; }
+.mermaid-diagram .node.err rect { fill: var(--err-soft) !important; stroke: var(--err) !important; }
+.mermaid-diagram .flowchart-link { stroke: var(--edge) !important; }
+.mermaid-diagram marker path { fill: var(--edge) !important; stroke: var(--edge) !important; }
+.mermaid-diagram .edgeLabel, .mermaid-diagram .edgeLabel rect, .mermaid-diagram .edgeLabel p, .mermaid-diagram .edgeLabel span, .mermaid-diagram .labelBkg { background: transparent !important; background-color: transparent !important; fill: transparent !important; }
+.mermaid-diagram .edgeLabel p { color: var(--muted) !important; }
+/* Line labels sit just to the right of their line (the charts run top to bottom) */
+.mermaid-diagram .edgeLabel foreignObject { overflow: visible; }
+.mermaid-diagram .edgeLabel foreignObject > div { transform: translateX(calc(50% + 6px)); }
+.nudge-up { display: inline-block; transform: translateY(-20px); }
+.nudge-right { display: inline-block; transform: translateX(20px); }
+.nudge-right-15 { display: inline-block; transform: translateX(15px); }
+.nodeLabel code {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 2px 7px;
+  font-family: var(--font-diagram-mono) !important;
+  font-size: 0.8em;
+  color: var(--code-fg);
+  background: var(--code-bg);
+  border: 1px solid var(--code-line);
+  border-radius: 4px;
+  white-space: nowrap;
+  text-align: left;
+  line-height: 1.45;
+}
+
+.mermaid-diagram .cluster rect { fill: var(--int-bg) !important; stroke: var(--int-line) !important; stroke-width: 1.5px !important; rx: 8px; }
+/* unprefixed so the bold is there when mermaid measures the title */
+.cluster-label .nodeLabel { font-weight: 600; }
+.cluster-label foreignObject { overflow: visible; }
+.mermaid-diagram .cluster .nodeLabel, .mermaid-diagram .cluster-label .nodeLabel { color: var(--int-fg) !important; }
+.cluster-label div, .cluster-label span, .cluster-label p { text-align: center !important; }
+
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.9rem; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; color: var(--blue); font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; background: var(--blue-soft); }
+tr:last-child td { border-bottom: none; }
+td:first-child { font-family: var(--font-mono); font-size: 0.85rem; white-space: nowrap; }
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow">Fermilab Booster · helper_scripts</span>
+    <h1>run_madx flow charts</h1>
+    <p class="lede">How <code>run_madx.py</code> goes from a list of device files to MAD-X results at one time t [µs], and which function reads or writes which file. Each box says what the step does, with the code that does it underneath. Everything runs in place in <code>madx_files/</code>.</p>
+  </header>
+
+  <section>
+    <div class="legend">
+      <div><span class="sw box"></span><span>gray box: one function (<code>prepare</code> or <code>run_point</code>) and the steps it does for you</span></div>
+      <div><span class="sw io"></span><span>In / Out: what goes into that function and what it returns</span></div>
+      <div><span class="sw step"></span><span>a step, with its function call (<code>dd</code> device_data, <code>rt</code> ramp_timing, <code>mxin</code> madx_input)</span></div>
+      <div><span class="sw decide"></span><span>a decision</span></div>
+      <div><span class="sw file"></span><span>a file on disk</span></div>
+      <div><span class="sw err"></span><span>an error raised</span></div>
+      <div><span class="sw line"></span><span>call order</span></div>
+      <div><span class="sw dot"></span><span>file read or written</span></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Chart 1</span>
+    <h2>Run sequence</h2>
+    <div class="notes">
+      <p><code>prepare</code> runs once, then <code>run_point</code> once per time. <code>scan(setup, times, collect)</code> repeats it for the times you give it and returns one table row per time.</p>
+    </div>
+    <div class="diagram">
+<pre class="mermaid">
+%%{init: {"flowchart": {"wrappingWidth": 400, "subGraphTitleMargin": {"top": 6, "bottom": 34}}}}%%
+flowchart TD
+  cfg["Select lattice, devices,&lt;br/&gt;overrides, RF on/off&lt;br/&gt;&lt;code&gt;cfg = Config(lattice, devices,&lt;br/&gt;overrides, rf)&lt;/code&gt;"]
+  prep["Load devices, overrides, and&lt;br/&gt;find required .dat input files&lt;br/&gt;&lt;code&gt;setup = prepare(cfg)&lt;/code&gt;"]
+  collect["Read anything else before the&lt;br/&gt;next run overwrites it&lt;br/&gt;&lt;code&gt;collect(res)&lt;/code&gt;"]
+  subgraph rp_in["Run at time t&lt;br/&gt;&lt;code&gt;res = run_point(setup, t)&lt;/code&gt;"]
+    direction TB
+    rin("In: the prepared run&lt;br/&gt;and a time t [µs]&lt;br/&gt;&lt;code&gt;setup, t&lt;/code&gt;")
+    energy["Calculate kinetic energy and&lt;br/&gt;RF frequency at time t&lt;br/&gt;&lt;code&gt;rt.ke_at, rt.ke_gmps_at,&lt;br/&gt;rt.ke_to_frf&lt;/code&gt;"]
+    rf{"Select RF mode"}
+    v0["RF off: V, Φ = 0&lt;br/&gt;&lt;code&gt;rf = #quot;off#quot;&lt;/code&gt;"]
+    vp["Φ from RFA / RFB, one V&lt;br/&gt;from dKE per turn&lt;br/&gt;&lt;code&gt;mxin.rf_values(t, devs, settings,&lt;br/&gt;#quot;phase#quot;, dke)&lt;/code&gt;"]
+    vv["Φ from RFA / RFB, V from&lt;br/&gt;the readbacks&lt;br/&gt;&lt;code&gt;mxin.rf_values(t, devs, settings,&lt;br/&gt;#quot;phase+volt#quot;)&lt;/code&gt;"]
+    common["Write input file with kinetic&lt;br/&gt;energy, RF, and magnet&lt;br/&gt;currents for MAD-X&lt;br/&gt;&lt;code&gt;mxin.write_common(Common_Booster_input.dat,&lt;br/&gt;vals)&lt;/code&gt;"]
+    pip{"PIP-II injection painting?"}
+    madx["Run MAD-X once&lt;br/&gt;&lt;code&gt;_run(setup)&lt;/code&gt;"]
+    p1["Pass 1: run with all painting&lt;br/&gt;kicks at 0&lt;br/&gt;&lt;code&gt;painting.write_injection(inj, None)&lt;br/&gt;_run(setup)&lt;/code&gt;"]
+    ang["Calculate kick angles from&lt;br/&gt;sector maps&lt;br/&gt;&lt;code&gt;painting.kick_angles(sectormap,&lt;br/&gt;y_orbump, y_pm, x_pm)&lt;/code&gt;"]
+    p2["Pass 2: run with those kicks&lt;br/&gt;&lt;code&gt;painting.write_injection(inj, angles)&lt;br/&gt;_run(setup)&lt;/code&gt;"]
+    res("Out: tunes, chromaticity,&lt;br/&gt;twiss table, angles&lt;br/&gt;&lt;code&gt;res = Result(q1, q2, chrom1,&lt;br/&gt;chrom2, twiss, ...)&lt;/code&gt;")
+  end
+
+  cfg --> prep --> rin --> energy --> rf
+  rf -->|off| v0
+  rf -->|Φ| vp
+  rf -->|"Φ + V"| vv
+  v0 --> common
+  vp --> common
+  vv --> common
+  common --> pip
+  pip -->|"no (MEV400)"| madx
+  pip -->|"yes (PIP-II)"| p1 --> ang --> p2
+  madx --> res
+  madx ~~~ p2
+  p2 --> res
+  res --> collect
+  collect -->|"&lt;span class='nudge-up'&gt;next t&lt;/span&gt;"| rin
+
+  classDef step stroke-width:2px
+  classDef decide stroke-width:2px
+  class cfg,prep,energy,v0,vp,vv,common,madx,p1,ang,p2,collect step
+  classDef io stroke-width:2px
+  class rin,res io
+  class rf,pip decide
+</pre>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Chart 2</span>
+    <h2>What prepare does</h2>
+    <div class="notes">
+      <p>What <code>prepare</code> loads and checks once, before any MAD-X run. The command line (<code>main</code>) only builds a <code>Config</code>, then calls <code>prepare</code> and <code>scan</code>.</p>
+    </div>
+
+    <div class="diagram">
+<pre class="mermaid">
+%%{init: {"flowchart": {"wrappingWidth": 400, "subGraphTitleMargin": {"top": 6, "bottom": 56}}}}%%
+flowchart TD
+  cli["Command line: build the Config,&lt;br/&gt;optionally from a JSON file&lt;br/&gt;&lt;code&gt;main()&lt;br/&gt;Config.load(path)&lt;/code&gt;"]
+  cfg["Run settings&lt;br/&gt;&lt;code&gt;Config&lt;/code&gt;"]
+  devf[("Device JSON files: BMA, MISC (MEV400 or PIP_II), rf_phase_curves, VRF_READBACK_clean")]
+  lat[("madx_files/*_lattice.madx")]
+  subgraph prep_in["Load devices, overrides, and&lt;br/&gt;find required .dat input files&lt;br/&gt;&lt;code&gt;setup = prepare(cfg)&lt;/code&gt;"]
+    direction TB
+    pin("In: the run settings&lt;br/&gt;&lt;code&gt;cfg&lt;/code&gt;")
+    ld["Load every device file&lt;br/&gt;&lt;code&gt;load_devices(cfg.devices)&lt;/code&gt;"]
+    ddl["Per file: arrays, time axis,&lt;br/&gt;groups&lt;br/&gt;&lt;code&gt;dd.load(path)&lt;/code&gt;"]
+    dup{"Duplicate device names?"}
+    e1["Stop&lt;br/&gt;&lt;code&gt;ValueError&lt;/code&gt;"]
+    drp["Replace devices with the&lt;br/&gt;override constants&lt;br/&gt;&lt;code&gt;apply_overrides(pool,&lt;br/&gt;cfg.overrides)&lt;/code&gt;"]
+    unk{"Does override name match?"}
+    w1["Warn and skip it&lt;br/&gt;&lt;code&gt;setup.ignored&lt;/code&gt;"]
+    rs["Read the GMPS ramp settings&lt;br/&gt;&lt;code&gt;rt.ramp_settings(devs)&lt;/code&gt;"]
+    kei{"Injection KE within 10%&lt;br/&gt;of the lattice's KE_INJ?"}
+    e2["Stop: wrong MISC file&lt;br/&gt;&lt;code&gt;ValueError&lt;/code&gt;"]
+    ks["Look up the KE source device,&lt;br/&gt;if given&lt;br/&gt;&lt;code&gt;devs[cfg.ke_source]&lt;/code&gt;"]
+    rfm["Pick the RF mode from the&lt;br/&gt;devices present&lt;br/&gt;&lt;code&gt;mxin.rf_mode(devs)&lt;/code&gt;"]
+    lp["Find the files the lattice&lt;br/&gt;calls and writes&lt;br/&gt;&lt;code&gt;_CALL, _WRITE, _SURVEY regex&lt;/code&gt;"]
+    paint{"Calls PIP_II_Booster_injection.dat?"}
+    S("Out: everything run_point needs&lt;br/&gt;&lt;code&gt;setup = Setup(devs, settings,&lt;br/&gt;rf_mode, outputs, painting)&lt;/code&gt;")
+  end
+
+  cli -.-> cfg
+  cfg --> pin
+  pin --> ld
+  pin --> lp
+  devf -.->|read| ddl
+  ld --> ddl --> dup
+  dup -->|"&lt;span class='nudge-right'&gt;yes&lt;/span&gt;"| e1
+  dup -->|no| drp --> unk
+  unk -->|"&lt;span class='nudge-right-15'&gt;no&lt;/span&gt;"| w1
+  unk -->|yes| rs
+  w1 --> rs
+  unk -->|yes| ks
+  unk -->|yes| rfm
+  lat -.->|"find .dat files"| lp
+  lp --> paint
+  paint ~~~ unk
+  rs --> kei
+  kei -->|"&lt;span class='nudge-right'&gt;no&lt;/span&gt;"| e2
+  kei -->|yes| S
+  lat -.->|KE_INJ| kei
+  ks --> S
+  rfm --> S
+  paint -->|"painting on / off"| S
+
+  classDef step stroke-width:2px
+  classDef decide stroke-width:2px
+  classDef file stroke-width:2px
+  classDef err stroke-width:2px
+  class cli,cfg,ld,ddl,drp,rs,ks,rfm,lp step
+  classDef io stroke-width:2px
+  class pin,S io
+  class dup,paint,unk,kei decide
+  classDef warn stroke-width:2px
+  class w1 warn
+  class devf,lat file
+  class e1,e2 err
+</pre>
+    </div>
+
+  </section>
+
+  <section>
+    <span class="eyebrow">Files</span>
+    <h2>Who reads and writes what</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>File</th><th>Written by</th><th>Read by</th><th>When</th></tr></thead>
+        <tbody>
+          <tr><td>data_Booster/*.json</td><td>you (or dd.save)</td><td>load_devices → dd.load</td><td>once, in prepare</td></tr>
+          <tr><td>data_Booster/rf_phase_curves.json</td><td>you (RFA, RFB, RF_CAVITY_PHASE with the off cavities)</td><td>load_devices; turns RF on (mode phase)</td><td>once, in prepare</td></tr>
+          <tr><td>madx_files/*_lattice.madx</td><td>you</td><td>prepare (text parse), MAD-X</td><td>prepare, then every run</td></tr>
+          <tr><td>Common_Booster_input.dat</td><td>mxin.write_common (values from mxin.common_values)</td><td>MAD-X (call)</td><td>every point</td></tr>
+          <tr><td>PIP_II_Booster_injection.dat</td><td>painting.write_injection</td><td>MAD-X (call), PIP-II only</td><td>twice per point: zeros, then angles</td></tr>
+          <tr><td>*_twiss.outx</td><td>MAD-X</td><td>output(setup, "twiss") → Result.twiss</td><td>after the last pass</td></tr>
+          <tr><td>*_sectormap.outx</td><td>MAD-X</td><td>painting.kick_angles (PIP-II), or you via output()</td><td>after pass 1</td></tr>
+          <tr><td>*_survey.outx, *_trackone, sectormap</td><td>MAD-X</td><td>nothing in run_madx (output(setup, "survey") if you want it)</td><td>every run</td></tr>
+          <tr><td>madx.log</td><td>MAD-X screen output</td><td>_run (success check)</td><td>every run</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notes">
+      <p>Each run overwrites every file in <code>madx_files/</code> listed above, so read the tables you need inside the loop (<code>res.twiss</code>, <code>output(setup, …)</code>, or <code>collect</code>).</p>
+    </div>
+  </section>
+</main>
+
+
+<!--claude-mermaid-runtime-begin:3477-->
+<style>.mermaid-diagram{margin-block:4px}.mermaid-diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>(function(){
+var CFG={"palettes":{"light":{"surface":"#f4efe4","text":"#42392e","line":"#8a7f6d","border":"#7a6c52","bg":"#fffdf8"},"dark":{"surface":"#262b34","text":"#f2f3f5","line":"#a8adb8","border":"#9aa4b8","bg":"#1f232b"}}};
+if(typeof mermaid==='undefined')return;
+var pres=Array.prototype.slice.call(document.querySelectorAll('pre.mermaid')).filter(function(p){if(p.hasAttribute('data-claude-mermaid-claimed'))return false;p.setAttribute('data-claude-mermaid-claimed','1');return true;});
+if(!pres.length)return;
+var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+var root=document.documentElement;
+var items=pres.map(function(pre){
+var mount=document.createElement('div');mount.className='mermaid-diagram';
+return {pre:pre,mount:mount,src:pre.textContent||''};
+});
+var seq=0;
+var renderGen=0;
+var lastKey='';
+function pageBg(fallback){
+var els=[document.body,document.documentElement];
+for(var i=0;i<els.length;i++){
+var c=els[i]&&getComputedStyle(els[i]).backgroundColor;
+if(c&&c!=='transparent'&&c!=='rgba(0, 0, 0, 0)')return c;
+}
+return fallback;
+}
+function render(){
+var theme=root.getAttribute('data-theme');
+var dark=theme==='dark'||(!!(mq&&mq.matches)&&theme!=='light');
+var pal=dark?CFG.palettes.dark:CFG.palettes.light;
+var bg=pageBg(pal.bg);
+var key=(dark?'d':'l')+'|'+bg;
+if(key===lastKey)return;
+lastKey=key;
+var gen=++renderGen;
+var font=getComputedStyle(document.body).fontFamily||'sans-serif';
+var nat={useMaxWidth:false};
+mermaid.initialize({
+startOnLoad:false,securityLevel:'strict',theme:'base',
+flowchart:nat,sequence:nat,er:nat,state:nat,class:nat,pie:nat,
+gantt:nat,journey:nat,timeline:nat,gitGraph:nat,mindmap:nat,xyChart:nat,
+quadrantChart:nat,sankey:nat,c4:nat,requirement:nat,block:nat,
+packet:nat,kanban:nat,architecture:nat,radar:nat,
+themeVariables:{background:bg,mainBkg:pal.surface,primaryColor:pal.surface,
+primaryTextColor:pal.text,lineColor:pal.line,primaryBorderColor:pal.border,
+nodeBorder:pal.border,clusterBorder:pal.border,edgeLabelBackground:bg,
+clusterBkg:'rgba(127,127,127,0.07)',titleColor:pal.text,
+darkMode:dark,rowOdd:bg,rowEven:'rgba(127,127,127,0.07)',
+attributeBackgroundColorOdd:bg,attributeBackgroundColorEven:'rgba(127,127,127,0.07)',
+fontSize:'16px',fontFamily:font},
+themeCSS:'.node rect, .node circle, .node polygon, .node path, .cluster rect { stroke-width: 2px; }'
+});
+items.forEach(function(it){
+var id='claude-mermaid-'+seq++;
+mermaid.render(id,it.src).then(function(r){
+if(gen!==renderGen)return;
+var prev=it.pre.previousElementSibling;
+if(prev&&prev.className==='mermaid-diagram'&&prev!==it.mount)return;
+it.mount.innerHTML=r.svg;
+if(!it.mount.parentNode)it.pre.parentNode.insertBefore(it.mount,it.pre);
+it.pre.style.display='none';
+},function(){
+var scratch=document.getElementById(id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+scratch=document.getElementById('d'+id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+if(gen!==renderGen)return;
+if(it.mount.parentNode)it.mount.parentNode.removeChild(it.mount);
+it.pre.style.display='';
+});
+});
+}
+render();
+if(mq&&mq.addEventListener)mq.addEventListener('change',render);
+if(typeof MutationObserver!=='undefined')new MutationObserver(render).observe(root,{attributes:true,attributeFilter:['data-theme']});
+})();</script>
+<!--claude-mermaid-runtime-end-->
+
+</body></html>
