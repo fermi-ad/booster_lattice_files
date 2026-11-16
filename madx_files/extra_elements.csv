@@ -1,0 +1,13 @@
+name,class,ref,offset_m,length_m,source
+EXTRACTION_KICKER_L2_A,MKS_KICKER,BMAL2,-4.6710,1.0800,"archived pip_lattice, mapped; not surveyed (MKS02 #1)"
+EXTRACTION_KICKER_L2_B,MKS_KICKER,BMAL2,-3.5149,1.0800,"archived pip_lattice, mapped; not surveyed (MKS02 #2)"
+BEX2,BEX2,BMAL2,-2.7524,0.2650,"archived pip_lattice, mapped; not surveyed (IBEX02 #1)"
+EXTRACTION_KICKER_L2_C,MKS_KICKER,BMAL2,-1.9898,1.0800,"archived pip_lattice, mapped; not surveyed (MKS02 #3)"
+EXTRACTION_KICKER_L2_D,MKS_KICKER,BMAL2,-0.8337,1.0800,"archived pip_lattice, mapped; not surveyed (MKS02 #4)"
+BEX3,BEX3,DMAG3_1_NLE_FLNG,-0.2933,0.3300,"archived pip_lattice, mapped; not surveyed (IBEX03 #1)"
+BEX4,BEX4,BMAL4,-1.2168,0.2650,"archived pip_lattice, mapped; not surveyed (IBEX4 #1)"
+OLDSTYLE_BPM_L3,MONITOR,DMAG3_1_NLE_FLNG,-0.0642,0.0000,"archived pip_lattice, mapped; not surveyed (BPML03 #1)"
+OLDSTYLE_BPM_U6L,MONITOR,BMAL6,-5.2874,0.0000,"archived pip_lattice, mapped; not surveyed (BPMLU6 #1)"
+OLDSTYLE_BPM_U7L,MONITOR,DMAG6_4_NLE_FLNG,0.0492,0.0000,0.049 m after the DMAG6_4 flange like OLDSTYLE_BPM_U6L (user 2026-11-02)
+OLDSTYLE_BPM_U8L,MONITOR,DMAG7_4_NLE_FLNG,0.0492,0.0000,0.049 m after the DMAG7_4 flange like OLDSTYLE_BPM_U6L (user 2026-11-02)
+L1_START,MARKER,DMAG24_4_NLE_FLNG,0.0000,0.0000,"start of the L1 straight (DMAG24_4 downstream flange): the tracking start (SEQEDIT CYCLE) for MEV400 (user 2026-11-13)"

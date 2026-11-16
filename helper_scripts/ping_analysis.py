@@ -22,7 +22,8 @@ The user's method (2026-10-24), per ping:
 Data: bpm_data devices (bd.read(path): TBT text or saved .json; one device per BPM and plane, "values" per turn,
 nan = no reading, "turn_offset"). planes(devs) = bd.planes -> the (48, n_turns) arrays in ring order. Model optics (optional) from a
 MAD-X twiss table: model_optics(twiss) (MAD-X's phase starts at the sequence start, sector 11 for MEV400:
-model_advances takes care of it).
+model_advances takes care of it). With RE11..RE44 in the twiss table (TWISS, RMATRIX) model_optics also names
+the model's eigenmodes by character like the measured A/B (model_modes): Qx = the mode mostly in x, Qy mostly in y.
 
 Notebook:
     import ping_analysis as pa
@@ -212,7 +213,8 @@ def advances(mu: np.ndarray, Q: float) -> np.ndarray:
 def model_optics(twiss: TfsTable) -> dict:
     """Model phase [rad, continuous from BMAL1], beta and dispersion at the BPMs in ring order, both planes,
     and the tunes, from a MAD-X twiss table. MAD-X's phase starts at the sequence start, so the phase is
-    rebuilt from the advances taken in MAD-X's own order."""
+    rebuilt from the advances taken in MAD-X's own order. With RE11..RE44 in the table (TWISS, RMATRIX)
+    also the eigenmodes named by character (model_modes): Qx, Qy, hv_x, hv_y, xshare_x, xshare_y."""
     out = {"Q1": twiss.header["Q1"], "Q2": twiss.header["Q2"]}
     for p, b, m, q in (("x", "BETX", "MUX", "Q1"), ("y", "BETY", "MUY", "Q2")):
         mu = 2 * np.pi * np.array([twiss.row(f"{n}_BPM")[m] for n in NAMES])
@@ -221,7 +223,35 @@ def model_optics(twiss: TfsTable) -> dict:
         out[f"adv_{p}"] = adv
         out[f"beta_{p}"] = np.array([twiss.row(f"{n}_BPM")[b] for n in NAMES])
     out["dx"] = np.array([twiss.row(f"{n}_BPM")["DX"] for n in NAMES])
+    if all(c in twiss for c in RE_COLUMNS):
+        out.update(model_modes(twiss))
     return out
+
+
+RE_COLUMNS = [f"RE{i}{j}" for i in range(1, 5) for j in range(1, 5)]   # transverse part of MAD-X's RMATRIX
+
+
+def model_modes(twiss: TfsTable) -> dict:
+    """The two eigenmodes of the model's one-turn 4x4 matrix (RE11..RE44 of the last row = the map from the
+    sequence start), named by character like the measured modes A/B in tune_table: each eigenvector is carried
+    to the 48 BPMs, and the mode with the larger H/V amplitude ratio (mean |x| / mean |y|) is Qx, the other Qy.
+    Returns Qx, Qy (tunes between 6.5 and 7), hv_x, hv_y (H/V amplitude ratios) and xshare_x, xshare_y (the x
+    share of each mode's action, a_x / (a_x + a_y) with a_p = Im(conj(p) p'), mean over the BPMs: 1 = pure x,
+    0 = pure y). MAD-X's Q1/Q2 already follow the character (Q1 = Qx at all 120 points checked, 2026-10-27)."""
+    rmat = lambda r: np.array([r[c] for c in RE_COLUMNS]).reshape(4, 4)
+    M = rmat(twiss.row(len(twiss) - 1))
+    R = [rmat(twiss.row(f"{n}_BPM")) for n in NAMES]
+    lam, vec = np.linalg.eig(M)
+    modes = []
+    for k in np.argsort(np.angle(lam))[:2]:                        # one of each complex-conjugate pair
+        q = np.mod(np.angle(lam[k]) / (2 * np.pi), 1.0)
+        w = np.array([Ri @ vec[:, k] for Ri in R])                 # (48, 4): x, px, y, py at the BPMs
+        a_x, a_y = np.imag(np.conj(w[:, 0]) * w[:, 1]), np.imag(np.conj(w[:, 2]) * w[:, 3])
+        modes.append({"Q": TUNE_INT - 1 + max(q, 1 - q), "hv": np.mean(np.abs(w[:, 0])) / np.mean(np.abs(w[:, 2])),
+                      "xshare": float(np.mean(a_x / (a_x + a_y)))})
+    x, y = sorted(modes, key=lambda m: m["hv"], reverse=True)
+    return {"Qx": x["Q"], "Qy": y["Q"], "hv_x": x["hv"], "hv_y": y["hv"], "xshare_x": x["xshare"],
+            "xshare_y": y["xshare"]}
 
 
 def model_advances(mu: np.ndarray, Q: float) -> np.ndarray:

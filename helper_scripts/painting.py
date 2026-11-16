@@ -28,6 +28,7 @@ Example:
     painting.write_injection("runs/x/PIP_II_Booster_injection.dat", angles)
 """
 
+import re
 from pathlib import Path
 
 import numpy as np
@@ -48,8 +49,7 @@ _KICKERS = {
 _ANGLE_NAMES = {"x": ("HPMS09_ANG", "HPMS10_ANG", "HPMS11_ANG", "HPMS12_ANG"),
                 "y": ("VPML10_ANG", "VPML11U_ANG", "VPML11D_ANG", "VPML12_ANG")}
 _POINT = "TREATYPOINT"
-_ORBUMP = ("LBTL_BINJ_OBMP1_8510_KICK", "LBTL_BINJ_OBMP2_8511_KICK",
-           "LBTL_BINJ_OBMP3_8510_KICK", "LBTL_BINJ_OBMP4_8511_KICK")
+_ORBUMP = re.compile(r"LBTL_BINJ_OBMP[1-4]_\d+_KICK")     # the device number after OBMP<n> changes between lattices
 
 
 def offsets_at(devs: Devices, t: float, overrides: dict[str, float] | None = None) -> dict[str, float]:
@@ -106,9 +106,12 @@ def kick_angles(sectormap: TfsTable, y_orbump: float = 0.0, y_pm: float = 0.0,
     """{ANGLES name: kick [rad]} for offsets [m] at TREATYPOINT, from a sectormap table
     (<lattice>_sectormap.outx of the same optics). All 0 offsets give all 0 angles.
     """
-    pos = {name: sectormap.row(name)["POS"] for name in _ORBUMP}
-    leg1 = pos[_ORBUMP[1]] - pos[_ORBUMP[0]]
-    leg2 = pos[_ORBUMP[3]] - pos[_ORBUMP[2]]
+    kicks = sorted(str(n) for n in sectormap["NAME"] if _ORBUMP.fullmatch(str(n)))
+    if len(kicks) != 4:
+        raise ValueError(f"expected 4 ORBUMP kicks in the sectormap, found {kicks}")
+    pos = [sectormap.row(name)["POS"] for name in kicks]
+    leg1 = pos[1] - pos[0]
+    leg2 = pos[3] - pos[2]
     if not np.isclose(leg1, leg2, rtol=0, atol=1e-9):
         raise ValueError(f"ORBUMP legs not the same length: {leg1} m, {leg2} m")
     angles = {"ORB_KICK_ANG": float(np.arcsin(y_orbump / leg2))}

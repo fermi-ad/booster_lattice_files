@@ -21,7 +21,7 @@ Paths in a Config are relative to the working directory (the project root).
 Notebook:
     import run_madx as rm
     cfg = rm.Config(lattice="madx_files/PIP_II_Booster_lattice.madx",
-                    devices=["data_Booster/10_23_26_BMA.json", "data_Booster/10_23_26_MISC_PIP_II.json"],
+                    devices=["data_Booster/11_03_26_BMA_PIP_II.json", "data_Booster/11_03_26_MISC_PIP_II.json"],
                     overrides={"B:HL3": 0.0, "Y_PM": -0.016})
     pool = rm.load_devices(cfg.devices)
     cfg.overrides.update(rm.batch_override(pool, 0.0, kind="SQ"))     # all skew quads at 0 A
@@ -32,7 +32,7 @@ Notebook:
 
 Command line (from the project root; prints one line per point, --csv to save the table):
     python helper_scripts/run_madx.py --lattice madx_files/MEV400_Booster_lattice.madx \\
-        --devices data_Booster/10_23_26_BMA.json data_Booster/10_23_26_MISC_MEV400.json \\
+        --devices data_Booster/11_03_26_BMA.json data_Booster/11_03_26_MISC_MEV400.json \\
         --batch H=0 V=0 --override B:QL1=0 --t 2400 5000
 """
 
@@ -83,6 +83,8 @@ class Config:
                 and dKE/turn instead of ramp_flat.
     rf          "auto" (RF mode from the devices present, see madx_input) or "off".
     madx        MAD-X binary.
+    beam_field  True: the magnet inputs are the field seen by the beam at t (madx_input.field_at),
+                not the current at t.
     """
     lattice: str
     devices: list[str]
@@ -90,6 +92,7 @@ class Config:
     ke_source: str | None = None
     rf: str = "auto"
     madx: str = MADX
+    beam_field: bool = False
 
     def save(self, path: str | Path) -> Path:
         """Write this config as JSON."""
@@ -118,6 +121,8 @@ class Setup:
     overridden: list[str]            # override names applied
     ignored: list[str]               # override names that matched nothing (warned)
     _dke_table: tuple[np.ndarray, np.ndarray] | None = None
+    bpm_offsets: dict[str, tuple[float, float]] = field(default_factory=dict)   # {element: (DX, DY) [m]} from the
+    #   lattice's misalignment record (lattice_mod); bpm_compare subtracts them at the BPMs
 
     def dke(self, t: float) -> float:
         """Energy gain per turn [GeV/turn] at t [us] (turns computed once)."""
@@ -175,7 +180,7 @@ def load_devices(paths: list[str | Path]) -> Devices:
 
 def input_names() -> set[str]:
     """Names the MAD-X inputs read that an override may add when the pool lacks them: the 288
-    currents, B:BFLAT, the extraction kickers (B:BEX2, MKSON), the RF voltages, the painting offsets
+    currents, B:BFLAT, the extraction kickers (B:BEX2..4, MKSON), the RF voltages, the painting offsets
     and the ramp settings."""
     return (set(mxin.current_names()) | {"B:BFLAT"} | set(mxin.KICKERS.values()) | set(painting.OFFSETS)
             | set(RAMP_NAMES)
@@ -240,6 +245,7 @@ def batch_override(devs: Devices, value: float, **match: Any) -> dict[str, float
 _CALL = re.compile(r"^\s*call\s*,\s*file\s*=\s*['\"]([^'\"]+)['\"]", re.I | re.M)
 _WRITE = re.compile(r"^\s*write\s*,\s*file\s*=\s*['\"]([^'\"]+)['\"]\s*,\s*table\s*=\s*(\w+)", re.I | re.M)
 _SURVEY = re.compile(r"^\s*survey\s*,.*?file\s*=\s*['\"]([^'\"]+)['\"]", re.I | re.M)
+_RECORD = re.compile(r"^!\s*Misalignments:.*record:\s*(\S+)", re.M)
 
 
 def prepare(cfg: Config) -> Setup:
@@ -266,18 +272,26 @@ def prepare(cfg: Config) -> Setup:
     if COMMON_FILE not in calls:
         raise ValueError(f"{cfg.lattice} does not call {COMMON_FILE}")
     outputs = {table.lower(): f for f, table in _WRITE.findall(text)}
-    outputs.update({"survey": f for f in _SURVEY.findall(text)})
+    surveys = _SURVEY.findall(text)
+    if surveys:                                          # lattice_mod adds a PERM_ALIGN_SURVEY one: "survey_perm"
+        outputs["survey"] = surveys[0]
+        outputs.update({"survey_perm": f for f in surveys[1:] if "_perm" in f})
     if "twiss" not in outputs:
         raise ValueError(f"{cfg.lattice} does not WRITE the twiss table")
     paint = painting.INJECTION_FILE in calls
     if paint and "sectormap_table" not in outputs:
         raise ValueError(f"{cfg.lattice} calls {painting.INJECTION_FILE} but does not WRITE SECTORMAP_TABLE")
+    bpm_offsets = {}
+    if m := _RECORD.search(text):                        # a misaligned modified lattice (lattice_mod)
+        import misalign
+        bpm_offsets = misalign.bpm_offsets(Path(cfg.lattice).parent / m.group(1))
     return Setup(cfg, devs, settings, ke_source, mode, Path(cfg.lattice).parent, outputs, paint,
-                 applied, ignored)
+                 applied, ignored, bpm_offsets=bpm_offsets)
 
 
 def output(setup: Setup, table: str = "twiss") -> TfsTable:
-    """The last run's output table: "twiss", "sectormap_table", "survey" (setup.outputs)."""
+    """The last run's output table: "twiss", "sectormap_table", "survey", "survey_perm" (modified lattices; see
+    setup.outputs)."""
     return TfsTable(setup.folder / setup.outputs[table.lower()])
 
 
@@ -304,14 +318,15 @@ def run_point(setup: Setup, t: float) -> Result:
     """
     cfg = setup.cfg
     t = float(t)
-    dke = setup.dke(t) if setup.rf_mode == "phase" else None
+    dke = setup.dke(t) if setup.rf_mode in ("phase", "sum") else None
     inj = setup.folder / painting.INJECTION_FILE
 
     offsets, angles = {}, {}
     if setup.painting:                                   # pass 1: no painting
         offsets = painting.offsets_at(setup.devs, t)
         painting.write_injection(inj, None, note=f"run_madx: t = {t} us, pass 1 (all 0)")
-    vals = mxin.common_values(t, setup.devs, setup.settings, setup.ke_source, setup.rf_mode, dke)
+    vals = mxin.common_values(t, setup.devs, setup.settings, setup.ke_source, setup.rf_mode, dke,
+                              beam_field=cfg.beam_field)
     mxin.write_common(setup.folder / COMMON_FILE, vals,
                     note=f"run_madx: {cfg.devices}, overrides = {sorted(setup.overridden)}")
     _run(setup)
@@ -322,6 +337,7 @@ def run_point(setup: Setup, t: float) -> Result:
         _run(setup)
 
     twiss = output(setup, "twiss")
+    twiss.bpm_offsets = setup.bpm_offsets                # for bpm_compare.model_orbit (misaligned lattices)
     h = twiss.header
     beta = float(np.sqrt(1.0 - 1.0 / h["GAMMA"] ** 2))
     return Result(t=t, ke_true=vals["KE_true"], ke=vals["KE"], dke=dke, rf_mode=setup.rf_mode,
@@ -380,6 +396,8 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--ke-source", help="frequency device name for KE_true")
     p.add_argument("--rf", choices=["auto", "off"])
     p.add_argument("--madx", help="MAD-X binary")
+    p.add_argument("--beam-field", action="store_true", default=None,
+                   help="magnet inputs = the field seen by the beam at t (madx_input.field_at)")
     p.add_argument("--csv", help="also save the scan table here")
     times = p.add_mutually_exclusive_group(required=True)
     times.add_argument("--t", nargs="+", type=float, help="times [us]")
@@ -388,7 +406,7 @@ def main(argv: list[str] | None = None) -> None:
     a = p.parse_args(argv)
 
     base = asdict(Config.load(a.config)) if a.config else {}
-    for key in ("lattice", "devices", "ke_source", "rf", "madx"):
+    for key in ("lattice", "devices", "ke_source", "rf", "madx", "beam_field"):
         val = getattr(a, key)
         if val is not None:
             base[key] = val

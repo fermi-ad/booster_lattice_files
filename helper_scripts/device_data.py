@@ -51,7 +51,7 @@ save() sets meta["created"] (if absent) and meta["modified"]; any other meta
 keys (notes, source, ...) are kept as given.
 
 Example:
-    devs, meta = load("data_Booster/10_23_26_BMA.json")
+    devs, meta = load("data_Booster/11_03_26_BMA.json")
     sxt = select(devs, kind="SX", role="table")
     add_device(devs, "B:HST01L", kind="position", value=1.0, unit="mm")
     meta["notes"] = "added HST01L survey offset"

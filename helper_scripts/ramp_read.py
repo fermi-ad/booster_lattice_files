@@ -1,5 +1,5 @@
 #What to run to get current operational settings
-#python3 ramp_read.py '10_23_26' -m '[[1,1],[1,1],[1,1]]' -m '[[1,1],[1,1],[1,1]]' -v '[2,7]' -v '[1]'
+#python3 ramp_read.py '11_03_26' -m '[[1,1],[1,1],[1,1]]' -m '[[1,1],[1,1],[1,1]]' -v '[2,7]' -v '[1,1]'
 
 import pacsys
 from pacsys.ramp import BoosterHVRamp, BoosterQRamp, BoosterSQRamp
@@ -148,7 +148,16 @@ ramp =pacsys.ramp.BoosterHVRamp.read("B:BEX2"+"T", slot=bex_table[0]-1)
 other_dict['B:VIMIN'] = {'value':pacsys.read('B:VIMIN.SET'), 'role':'setting', 'kind':'GMPS', 'group':'B:VIMIN', 'unit':'A'}
 other_dict['B:VIMAX'] = {'value':pacsys.read('B:VIMAX.SET'), 'role':'setting', 'kind':'GMPS', 'group':'B:VIMAX', 'unit':'A'}
 
-other_dict['B:BEX2T'] = {'values':ramp.values, 'dt':ramp.times, 't':ramp.cumtimes, 'dtoff':156.0, 'slot':bex_table[0], 'role':'table', 'kind':'BEX', 'group':'B:BEX2', 'unit':'A', 'note':'dtoff 156 us as the BMA tables (user 2026-10-25): read with the same ramp card class (BoosterHVRamp) as the H/V correctors, and possibly the same power supplies; the fitted RF extra delay (155.2 us) is similar, so these devices may be synchronized internally. Not measured for BEX2 itself.'}
+sf = pacsys.read("B:BEX2"+"S"+'.SETTING['+str(bex_table[0]-1)+']')
+other_dict["B:BEX2"+"S"] = {'sf':sf, 'kind':'BEX', 'slot':bex_table[0], 'role':'scale', 'group':'B:BEX2'}
+sf = pacsys.read("B:BEX3"+"S"+'.SETTING['+str(bex_table[0]-1)+']')
+other_dict["B:BEX3"+"S"] = {'sf':sf, 'kind':'BEX', 'slot':bex_table[0], 'role':'scale', 'group':'B:BEX3'}
+sf = pacsys.read("B:BEX4"+"S"+'.SETTING['+str(bex_table[0]-1)+']')
+other_dict["B:BEX4"+"S"] = {'sf':sf, 'kind':'BEX', 'slot':bex_table[0], 'role':'scale', 'group':'B:BEX4'}
+
+other_dict['B:BEX2T'] = {'values':ramp.values, 'dt':ramp.times, 't':ramp.cumtimes, 'dtoff':258.0, 'slot':bex_table[1], 'role':'table', 'kind':'BEX', 'group':'B:BEX2', 'unit':'A', 'note':'dtoff 156 us as the BMA tables (user 2026-10-25): read with the same ramp card class (BoosterHVRamp) as the H/V correctors, and possibly the same power supplies; the fitted RF extra delay (155.2 us) is similar, so these devices may be synchronized internally. Not measured for BEX2 itself.'}
+other_dict['B:BEX3T'] = {'values':ramp.values, 'dt':ramp.times, 't':ramp.cumtimes, 'dtoff':258.0, 'slot':bex_table[1], 'role':'table', 'kind':'BEX', 'group':'B:BEX3', 'unit':'A', 'note':'dtoff 156 us as the BMA tables (user 2026-10-25): read with the same ramp card class (BoosterHVRamp) as the H/V correctors, and possibly the same power supplies; the fitted RF extra delay (155.2 us) is similar, so these devices may be synchronized internally. Not measured for BEX2 itself.'}
+other_dict['B:BEX4T'] = {'values':ramp.values, 'dt':ramp.times, 't':ramp.cumtimes, 'dtoff':258.0, 'slot':bex_table[1], 'role':'table', 'kind':'BEX', 'group':'B:BEX4', 'unit':'A', 'note':'dtoff 156 us as the BMA tables (user 2026-10-25): read with the same ramp card class (BoosterHVRamp) as the H/V correctors, and possibly the same power supplies; the fitted RF extra delay (155.2 us) is similar, so these devices may be synchronized internally. Not measured for BEX2 itself.'}
 
 other_dict['MKSON'] = {'value':0.0, 'role':'setting', 'kind':'MKS', 'group':'MKSON'}#on/off factor, no unit
 

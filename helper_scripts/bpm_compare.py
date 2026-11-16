@@ -10,9 +10,10 @@ orbit at time t is a local polynomial fit (default a straight line) to the point
 the fit follows the slow ramp, the betatron oscillation and the noise average out. slow_orbit() returns the
 fitted value at t, its standard error, the slope and the rms of the residuals (noise + oscillation).
 
-Names: MAD-X element <-> device name per plane via bpm_data.ACNET_NAME: B:HST<nn><L|S> (x), B:VST<nn><L|S>
-(y), as in the text files; BMAL3_BPM = B:HST03L. The files also have B:HSTU3L, U6L, U7L (and VST),
-which have no element in the lattices (or pass names= to measured_orbit).
+Names: MAD-X element <-> device name per plane via bpm_data.acnet_name: B:HST<nn><L|S> (x), B:VST<nn><L|S>
+(y), as in the text files, except BMAL3_BPM = B:HSTU3L / B:VSTU3L (the L3 BMA-package BPM, user 2026-11-02;
+was B:HST03L before). The old-style BPMs (B:H/VST03L, U6L, and U8L read as U7L) are only in the modified
+lattice (bpm_data.OLD_BPMS; or pass names= to measured_orbit).
 
 Example:
     import run_madx as rm, bpm_data as bd, bpm_compare as bc
@@ -37,15 +38,23 @@ from tfs_reader import TfsTable
 BPM_SIGN = {"x": 1.0, "y": -1.0}                   # model = BPM_SIGN * BPM reading
 
 
-def model_orbit(twiss: TfsTable) -> pd.DataFrame:
-    """Model closed orbit at the BMA BPMs from a TfsTable twiss (X, Y in m in the table).
+def model_orbit(twiss: TfsTable, bpm_offsets: dict[str, tuple[float, float]] | None = None) -> pd.DataFrame:
+    """Model closed orbit at the BMA BPMs from a TfsTable twiss (X, Y in m in the table), as the BPMs read it.
 
-    Columns: name, s [m], x, y [mm], betx, bety [m], dx [m], mux, muy [2 pi]; in ring order (by s).
+    bpm_offsets {element: (DX, DY) [m]}: the BPMs' own misalignments; default the twiss's bpm_offsets attribute
+    (run_madx sets it from a misaligned lattice's record, lattice_mod), else none. The reading is X - DX, Y - DY
+    (MAD-X's X, Y at a misaligned MONITOR are in the ideal frame).
+    Columns: name, s [m], x, y [mm] (the reading), x_beam, y_beam [mm] (twiss X, Y), betx, bety [m], dx [m],
+    mux, muy [2 pi]; in ring order (by s).
     """
+    if bpm_offsets is None:
+        bpm_offsets = getattr(twiss, "bpm_offsets", None) or {}
     rows = []
     for el, ls, n in bpm_elements():
         r = twiss.row(el)
-        rows.append({"name": el, "s": r["S"], "x": 1e3 * r["X"], "y": 1e3 * r["Y"],
+        ox, oy = bpm_offsets.get(el, (0.0, 0.0))
+        rows.append({"name": el, "s": r["S"], "x": 1e3 * (r["X"] - ox), "y": 1e3 * (r["Y"] - oy),
+                     "x_beam": 1e3 * r["X"], "y_beam": 1e3 * r["Y"],
                      "betx": r["BETX"], "bety": r["BETY"], "dx": r["DX"], "mux": r["MUX"], "muy": r["MUY"]})
     return pd.DataFrame(rows).sort_values("s", ignore_index=True)
 
@@ -112,16 +121,16 @@ def compare(model: pd.DataFrame, measured: pd.DataFrame) -> pd.DataFrame:
 
 
 def plot_compare(cmp: pd.DataFrame, title: str | None = None, axes: np.ndarray | None = None) -> np.ndarray:
-    """Model and measured orbit along the ring, x and y (two panels, error bars on the
-    measurement). Returns the axes."""
+    """Model and measured orbit along the ring, two panels (error bars on the measurement): x (+ outward) and -y
+    (+ up; the model sign has y + down, BPM_SIGN). Returns the axes."""
     import matplotlib.pyplot as plt
     if axes is None:
         _, axes = plt.subplots(2, 1, figsize=(9, 6), sharex=True)
-    for ax, p in zip(axes, ("x", "y")):
-        ax.plot(cmp.s, cmp[f"{p}_model"], "o-", ms=3, label="model")
-        ax.errorbar(cmp.s, cmp[f"{p}_meas"], yerr=cmp[f"{p}_err"], fmt="s", ms=3, capsize=2, label="measured")
+    for ax, p, sign, label in zip(axes, ("x", "y"), (1, -1), ("x [mm] (+ out)", "-y [mm] (+ up)")):
+        ax.plot(cmp.s, sign * cmp[f"{p}_model"], "o-", ms=3, label="model")
+        ax.errorbar(cmp.s, sign * cmp[f"{p}_meas"], yerr=cmp[f"{p}_err"], fmt="s", ms=3, capsize=2, label="measured")
         ax.axhline(0, color="gray", lw=0.6)
-        ax.set_ylabel(f"{p} [mm]")
+        ax.set_ylabel(label)
         rms = cmp.attrs.get("rms", {}).get(p)
         ax.legend(title=None if rms is None else f"rms(model - meas) = {rms:.2f} mm", fontsize=8)
     axes[-1].set_xlabel("s [m]")

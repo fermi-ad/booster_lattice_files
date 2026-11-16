@@ -238,7 +238,7 @@ def ramp_flat(t: ArrayLike, viflat: float, vimax: float, t_flat: float, freq_pul
 
 
 def ramp_settings(devs: Devices) -> Settings:
-    """Ramp arguments from setting devices, e.g. data_Booster/10_23_26_MISC_MEV400.json.
+    """Ramp arguments from setting devices, e.g. data_Booster/11_03_26_MISC_MEV400.json.
 
     Returns {"viflat", "vimax" [GeV], "t_flat": TFLAT, "freq_pulse": GMPSFRQ, "t_offset": BDOT,
     "circumference": CIRC} (RAMP_DEVICES; without CIRC the circumference is CIRCUMFERENCE).

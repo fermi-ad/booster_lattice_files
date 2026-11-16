@@ -30,7 +30,7 @@ then switch to the normal mode; all of it is over before turn GAIN_TURNS = 100. 
 Example:
     import bpm_data as bd
     devs = bd.read_tbt("studies/BPM_CO_opt/TBT_modelnpingtbtBPM.txt")
-    bd.add_timing(devs, rt.ramp_settings(misc), source="10_23_26_MISC_MEV400.json")
+    bd.add_timing(devs, rt.ramp_settings(misc), source="11_03_26_MISC_MEV400.json")
     bd.set_turn_offsets(devs, {"B:HST24L": -1})
     t = bd.times(devs["B:HST03L"], devs)        # cycle time [us] of each reading
     i = bd.index_at(devs["B:HST03L"], devs, 8000.0)   # index of the reading at 8 ms
@@ -61,11 +61,28 @@ from device_data import Device, Devices, Meta
 N_SECTORS = 24
 BPM_ELEMENT = "BMA{ls}{n}_BPM"                     # MAD-X MONITOR names, ls = "L" or "S"
 ACNET_NAME = {"x": "B:HST{n:02d}{ls}", "y": "B:VST{n:02d}{ls}"}   # BPM device names
+# BMA BPMs whose device is not ACNET_NAME (user 2026-11-02): the L3 BMA-package BPM is U3L; B:H/VST03L is the
+# old-style BPM at the end of L3 (OLD_BPMS)
+ACNET_EXCEPTIONS = {"BMAL3_BPM": {"x": "B:HSTU3L", "y": "B:VSTU3L"}}
 UNIT_TO_MM = {"mm": 1.0, "m": 1e3, "um": 1e-3}
 TURN0 = 2000.0                                     # [us] cycle time of turn 0 (control system)
 NO_READING = 1000.0                                # file value for "no reading"
 GAIN_TURNS = 100                                   # turns < this: BPM injection mode / switch-over (kept by default)
 TIMING = "TBT_TIME"                                # name of the turn-timing device
+# BPMs that are not BMA-package BPMs (user 2026-11-02): "note" on the devices (read_tbt, add_device_notes)
+OLD_BPM = "old-style BPM (not a BMA-package BPM; user 2026-11-02)"
+DEVICE_NOTES = {
+    **dict.fromkeys(["B:HST03L", "B:VST03L"], OLD_BPM + "; at the end of L3 (OLDSTYLE_BPM_L3)"),
+    **dict.fromkeys(["B:HSTU6L", "B:VSTU6L"], OLD_BPM + "; upstream end of L6 (OLDSTYLE_BPM_U6L)"),
+    **dict.fromkeys(["B:HSTU7L", "B:VSTU7L"], "the U8L BPM (old style, upstream end of L8, OLDSTYLE_BPM_U8L), read by the "
+                    "control system as U7L; the U7L BPM (old style) is not plugged in. 7L is a normal BMA BPM"),
+    **dict.fromkeys(["B:HSTU3L", "B:VSTU3L"], "the L3 BMA-package BPM (BMAL3_BPM; user 2026-11-02)"),
+}
+# old-style BPMs {lattice MONITOR (madx_files/<lattice>_modified.madx): {plane: device}}; OLDSTYLE_BPM_U7L has no data
+OLD_BPMS = {"OLDSTYLE_BPM_L3": {"x": "B:HST03L", "y": "B:VST03L"},
+            "OLDSTYLE_BPM_U6L": {"x": "B:HSTU6L", "y": "B:VSTU6L"},
+            "OLDSTYLE_BPM_U7L": {},
+            "OLDSTYLE_BPM_U8L": {"x": "B:HSTU7L", "y": "B:VSTU7L"}}
 
 
 def bpm_elements() -> list[tuple[str, str, int]]:
@@ -74,7 +91,10 @@ def bpm_elements() -> list[tuple[str, str, int]]:
 
 
 def acnet_name(element: str, plane: str) -> str:
-    """ACNET device name of a BMA BPM element ("BMAL3_BPM") for plane "x" or "y" (ACNET_NAME)."""
+    """ACNET device name of a BMA BPM element ("BMAL4_BPM") for plane "x" or "y" (ACNET_NAME, or
+    ACNET_EXCEPTIONS: BMAL3_BPM is B:HSTU3L / B:VSTU3L)."""
+    if element in ACNET_EXCEPTIONS:
+        return ACNET_EXCEPTIONS[element][plane]
     for el, ls, n in bpm_elements():
         if el == element:
             return ACNET_NAME[plane].format(ls=ls, n=n)
@@ -192,8 +212,21 @@ def read_tbt(path: str | Path, first_turn: int = 0) -> Devices:
         begin = int(head[head.index("TURN:") + 1])
         v[(v == NO_READING) | (v == 0.0) | (np.arange(n) + begin < first_turn)] = np.nan
         devs[name] = bpm_device(v, "x" if name.startswith("B:H") else "y", begin_turn=begin,
-                                cycle=int(head[head.index("CYCLE:") + 1]),
+                                cycle=_cycle(head[head.index("CYCLE:") + 1]),
                                 timestamp=lines[2].split(":", 1)[1].strip(), source=Path(path).name)
+    return add_device_notes(devs)
+
+
+def _cycle(token: str) -> int | str:
+    """The CYCLE field of a TBT file: an int if decimal (e.g. 17), else the text as is (e.g. "1D", the $1D event)."""
+    return int(token) if token.isdigit() else token
+
+
+def add_device_notes(devs: Devices) -> Devices:
+    """Set "note" from DEVICE_NOTES on the BPM devices present (in place); returns devs."""
+    for name, note in DEVICE_NOTES.items():
+        if name in devs:
+            devs[name]["note"] = note
     return devs
 
 
